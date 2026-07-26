@@ -456,10 +456,21 @@
       if (note) note.resume();   // back to idle chatter
     }
 
-    function send(view) {
+    function send(view, trigger) {
       var form = view.querySelector('[data-form]');
       var sent = view.querySelector('[data-sent]');
       if (!form || !sent) return;
+
+      // Hands the text to the visitor's own mail client. There is no server
+      // behind this panel, so the alternative was a button that says the
+      // message was delivered while dropping it on the floor.
+      var to = panel.getAttribute('data-mail');
+      var field = view.querySelector('.retro__input');
+      if (to) {
+        window.location.href = 'mailto:' + to +
+          '?subject=' + encodeURIComponent(trigger ? trigger.getAttribute('data-mail-subject') || '' : '') +
+          '&body=' + encodeURIComponent(field ? field.value : '');
+      }
 
       form.hidden = true;
       sent.hidden = false;
@@ -501,7 +512,7 @@
       var sender = e.target.closest('[data-send]');
       if (sender) {
         speak(sender);
-        send(views[current]);
+        send(views[current], sender);
       }
     });
 

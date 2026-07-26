@@ -188,7 +188,11 @@
            Sits after the button in source order so it reads as the thing the
            button opens, and so it can just drop into flow on narrow screens
            where there is no room for it alongside. -->
+      <!-- data-mail is where SEND actually goes. There is no backend behind
+           this panel, so the button hands the text to the visitor's own mail
+           client rather than claiming to have delivered it. -->
       <div class="retro" id="retro-panel" role="dialog" tabindex="-1"
+           data-mail="boalbasaur@gmail.com"
            aria-label="boalbasaur help menu" hidden>
 
         <div class="retro__view" data-view="menu">
@@ -220,9 +224,8 @@
         <div class="retro__view" data-view="contact" hidden>
           <p class="retro__heading" data-type>CONTACT</p>
           <div class="retro__lines">
-            <p data-type>EMAIL: hello@boalbasaur.com</p>
-            <p data-type>GITHUB: github.com/boalbasaur</p>
-            <p data-type>LINKEDIN: /in/boalbasaur</p>
+            <p data-type>EMAIL: boalbasaur@gmail.com</p>
+            <p data-type>GITHUB: github.com/BoalRolo</p>
           </div>
           <button class="retro__row retro__row--lead" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
             <span data-type>&lt; BACK</span>
@@ -231,10 +234,9 @@
 
         <div class="retro__view" data-view="donate" hidden>
           <p class="retro__heading" data-type>DONATE</p>
-          <p class="retro__body" data-type>If you enjoyed poking around, you can buy me a coffee to keep the lights on.</p>
-          <a class="retro__link" href="https://buymeacoffee.com/boalbasaur" target="_blank" rel="noopener noreferrer">
-            <span data-type>[ SUPPORT &rarr; ]</span>
-          </a>
+          <!-- No link here on purpose: there is no donation account to point
+               at, and a plausible-looking one would send money to a stranger. -->
+          <p class="retro__body" data-type>Honestly? Not worth it yet. I&rsquo;m still a seedling &mdash; come back when I&rsquo;ve evolved.</p>
           <button class="retro__row retro__row--lead" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
             <span data-type>&lt; BACK</span>
           </button>
@@ -248,13 +250,15 @@
               <button class="retro__row" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
                 <span data-type>&lt; BACK</span>
               </button>
-              <button class="retro__row" type="button" data-send data-note="Got it. Watering it now." aria-label="Send message">
+              <button class="retro__row" type="button" data-send
+                      data-mail-subject="Hello from boalbasaur.com"
+                      data-note="Off to your mail app." aria-label="Send message">
                 <span data-type>SEND &gt;</span>
               </button>
             </div>
           </div>
           <div data-sent hidden>
-            <p class="retro__body" data-type>MESSAGE SENT! THANKS.</p>
+            <p class="retro__body" data-type>HANDED IT TO YOUR MAIL APP.</p>
           </div>
         </div>
 
@@ -266,13 +270,15 @@
               <button class="retro__row" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
                 <span data-type>&lt; BACK</span>
               </button>
-              <button class="retro__row" type="button" data-send data-note="Got it. Watering it now." aria-label="Send idea">
+              <button class="retro__row" type="button" data-send
+                      data-mail-subject="An idea for boalbasaur.com"
+                      data-note="Off to your mail app." aria-label="Send idea">
                 <span data-type>SEND &gt;</span>
               </button>
             </div>
           </div>
           <div data-sent hidden>
-            <p class="retro__body" data-type>IDEA RECEIVED! THANKS.</p>
+            <p class="retro__body" data-type>HANDED IT TO YOUR MAIL APP.</p>
           </div>
         </div>
 
