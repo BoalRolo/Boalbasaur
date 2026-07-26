@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>boalbasaur — things I've grown</title>
 <meta name="description" content="I'm boalbasaur. I build things for fun, for learning, for actual clients, and sometimes just for the pure nonsense of it.">
-<meta name="theme-color" content="#dae9e6">
+<meta name="theme-color" content="#e6f2e4">
 <link rel="canonical" href="https://boalbasaur.com/">
 <link rel="icon" href="assets/favicon.png" type="image/png">
 
@@ -23,7 +23,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -39,31 +39,85 @@
     <span class="ground"></span>
 
     <!-- Already on the ground. They lie flat in a tight band on the surface,
-         overlapping into a litter line, and several run past the bottom edge
-         (.page clips them) so the layer reads as continuing out of frame. -->
-    <i class="leaf leaf--ground" style="--rot:88;  bottom:-26px; left:14%;  width:58px; height:96px"></i>
-    <i class="leaf leaf--ground" style="--rot:-79; bottom:-6px;  left:21%;  width:50px; height:84px"></i>
-    <i class="leaf leaf--ground" style="--rot:-84; bottom:4px;   left:29%;  width:46px; height:78px"></i>
-    <i class="leaf leaf--ground" style="--rot:93;  bottom:-20px; left:35%;  width:56px; height:92px"></i>
-    <i class="leaf leaf--ground" style="--rot:96;  bottom:-14px; left:51%;  width:52px; height:86px"></i>
-    <i class="leaf leaf--ground" style="--rot:-86; bottom:-2px;  left:72%;  width:48px; height:80px"></i>
-    <i class="leaf leaf--ground" style="--rot:-92; bottom:12px;  right:23%; width:44px; height:74px"></i>
-    <i class="leaf leaf--ground" style="--rot:80;  bottom:-30px; right:11%; width:54px; height:88px"></i>
+         overlapping into a continuous litter line, and several run past the
+         left, right and bottom edges (.page clips them) so the layer reads as
+         continuing out of frame rather than stopping at one.
+
+         Each is rotated to roughly ±90deg, which swaps its axes on screen: it
+         covers `height` horizontally (95-135px) and `width` vertically
+         (58-78px). So, measured as distance above the container's bottom edge,
+
+             visual bottom = bottom + (height - width) / 2
+             visual top    = visual bottom + width
+
+         Every `bottom` below is set so the visual bottom lands between -31 and
+         -14 — each leaf is cut off by the page edge rather than resting above
+         it. That is what makes the band read as a pile. Leave one sitting
+         clear of the edge and you see background underneath it, and the line
+         goes back to looking like it hovers. The visual tops come out between
+         28 and 64, which is the ragged skyline.
+
+         Horizontal spacing is a percentage while the sizes are pixels, so the
+         gaps grow with the viewport. At a 3% step they stay closed up to
+         ~2560px wide; past that bare ground starts showing between neighbours.
+         Widen the step and it breaks on ordinary 1080p-and-up displays. -->
+    <i class="leaf leaf--ground" style="--rot:98;  bottom:-46px;  left:-2%;  width:66px; height:117px"></i>
+    <i class="leaf leaf--ground" style="--rot:-81; bottom:-34px;  left:1%;   width:58px; height:95px"></i>
+    <i class="leaf leaf--ground" style="--rot:84;  bottom:-40px;  left:4%;   width:66px; height:113px"></i>
+    <i class="leaf leaf--ground" style="--rot:-80; bottom:-38px;  left:7%;   width:58px; height:95px"></i>
+    <i class="leaf leaf--ground" style="--rot:79;  bottom:-38px;  left:10%;  width:62px; height:101px"></i>
+    <i class="leaf leaf--ground" style="--rot:-98; bottom:-48px;  left:13%;  width:74px; height:121px"></i>
+    <i class="leaf leaf--ground" style="--rot:96;  bottom:-59px;  left:16%;  width:78px; height:134px"></i>
+    <i class="leaf leaf--ground" style="--rot:-79; bottom:-50px;  left:19%;  width:74px; height:125px"></i>
+    <i class="leaf leaf--ground" style="--rot:91;  bottom:-51px;  left:22%;  width:74px; height:130px"></i>
+    <i class="leaf leaf--ground" style="--rot:-87; bottom:-36px;  left:25%;  width:62px; height:106px"></i>
+    <i class="leaf leaf--ground" style="--rot:81;  bottom:-55px;  left:28%;  width:74px; height:130px"></i>
+    <i class="leaf leaf--ground" style="--rot:-89; bottom:-52px;  left:31%;  width:74px; height:127px"></i>
+    <i class="leaf leaf--ground" style="--rot:96;  bottom:-50px;  left:34%;  width:58px; height:99px"></i>
+    <i class="leaf leaf--ground" style="--rot:-99; bottom:-38px;  left:37%;  width:58px; height:100px"></i>
+    <i class="leaf leaf--ground" style="--rot:92;  bottom:-48px;  left:40%;  width:74px; height:125px"></i>
+    <i class="leaf leaf--ground" style="--rot:-87; bottom:-50px;  left:43%;  width:74px; height:131px"></i>
+    <i class="leaf leaf--ground" style="--rot:80;  bottom:-48px;  left:46%;  width:62px; height:108px"></i>
+    <i class="leaf leaf--ground" style="--rot:-88; bottom:-42px;  left:49%;  width:74px; height:123px"></i>
+    <i class="leaf leaf--ground" style="--rot:81;  bottom:-57px;  left:52%;  width:78px; height:132px"></i>
+    <i class="leaf leaf--ground" style="--rot:-82; bottom:-48px;  left:55%;  width:74px; height:125px"></i>
+    <i class="leaf leaf--ground" style="--rot:95;  bottom:-54px;  left:58%;  width:70px; height:118px"></i>
+    <i class="leaf leaf--ground" style="--rot:-88; bottom:-50px;  left:61%;  width:74px; height:129px"></i>
+    <i class="leaf leaf--ground" style="--rot:96;  bottom:-44px;  left:64%;  width:78px; height:131px"></i>
+    <i class="leaf leaf--ground" style="--rot:-86; bottom:-52px;  left:67%;  width:70px; height:114px"></i>
+    <i class="leaf leaf--ground" style="--rot:79;  bottom:-56px;  left:70%;  width:70px; height:121px"></i>
+    <i class="leaf leaf--ground" style="--rot:-99; bottom:-42px;  left:73%;  width:78px; height:135px"></i>
+    <i class="leaf leaf--ground" style="--rot:99;  bottom:-44px;  left:76%;  width:70px; height:117px"></i>
+    <i class="leaf leaf--ground" style="--rot:-89; bottom:-38px;  left:79%;  width:66px; height:107px"></i>
+    <i class="leaf leaf--ground" style="--rot:79;  bottom:-40px;  left:82%;  width:62px; height:107px"></i>
+    <i class="leaf leaf--ground" style="--rot:-85; bottom:-51px;  left:85%;  width:62px; height:108px"></i>
+    <i class="leaf leaf--ground" style="--rot:80;  bottom:-41px;  left:88%;  width:70px; height:118px"></i>
+    <i class="leaf leaf--ground" style="--rot:-86; bottom:-36px;  left:91%;  width:62px; height:105px"></i>
+    <i class="leaf leaf--ground" style="--rot:86;  bottom:-38px;  left:94%;  width:62px; height:109px"></i>
+    <i class="leaf leaf--ground" style="--rot:-99; bottom:-48px;  left:97%;  width:78px; height:132px"></i>
+    <i class="leaf leaf--ground" style="--rot:80;  bottom:-55px;  left:100%; width:70px; height:124px"></i>
 
     <!-- Drift down to join them as you scroll. data-start is the point in the
          page's scroll range where each one lets go, data-land how far above the
          bottom edge it comes to rest (negative = past it), data-rest the angle
          it settles at and data-turns how many extra tumbles it takes to get
-         there. -->
-    <i class="leaf" data-fall data-start="0"    data-land="16"  data-rest="86"  data-turns="1"  data-drift="28"
+         there.
+
+         data-land is measured exactly like the litter line's `bottom`, so run
+         it through the same conversion: a leaf's visual bottom ends up at
+         data-land + (height - width) / 2. Keep that under 28 — the lowest
+         point of the pile's skyline — or the leaf comes to rest above the
+         litter with nothing under it, which is what made these hover. The six
+         below land between -2 and 22. -->
+    <i class="leaf" data-fall data-start="0"    data-land="2"   data-rest="86"  data-turns="1"  data-drift="28"
        style="--rot:-18; top:9%;  left:5%;   width:70px; height:110px"></i>
     <i class="leaf" data-fall data-start="0.05" data-land="-8"  data-rest="-94" data-turns="-1" data-drift="22"
        style="--rot:24;  top:15%; right:8%;  width:54px; height:90px"></i>
-    <i class="leaf" data-fall data-start="0.12" data-land="28"  data-rest="82"  data-turns="1"  data-drift="30"
+    <i class="leaf" data-fall data-start="0.12" data-land="-2"  data-rest="82"  data-turns="1"  data-drift="30"
        style="--rot:-30; top:24%; left:3%;   width:60px; height:100px"></i>
     <i class="leaf" data-fall data-start="0.20" data-land="-20" data-rest="-88" data-turns="0"  data-drift="18"
        style="--rot:30;  top:32%; left:63%;  width:56px; height:92px"></i>
-    <i class="leaf" data-fall data-start="0.30" data-land="6"   data-rest="92"  data-turns="-1" data-drift="26"
+    <i class="leaf" data-fall data-start="0.30" data-land="-6"  data-rest="92"  data-turns="-1" data-drift="26"
        style="--rot:-12; top:45%; left:40%;  width:64px; height:104px"></i>
     <i class="leaf" data-fall data-start="0.42" data-land="-16" data-rest="-80" data-turns="1"  data-drift="20"
        style="--rot:-20; top:54%; right:33%; width:52px; height:86px"></i>
@@ -71,7 +125,7 @@
 
   <header class="site-header">
     <div class="brand">
-      <img class="brand__logo" src="assets/logo.png" alt="" width="612" height="562">
+      <img class="brand__logo" src="assets/logo.png" alt="" width="836" height="827">
       <span class="brand__name">boalbasaur</span>
     </div>
     <a class="ghost-button" href="#projects">See projects &darr;</a>
@@ -84,7 +138,7 @@
     </p>
 
     <h1 class="hero__title" data-reveal>
-      Things I&rsquo;ve grown,<br><span class="hero__title-accent">laid out properly<span class="hero__title-dot">.</span></span>
+      Things I&rsquo;ve grown,<br><span class="hero__title-accent">laid out properly.</span>
     </h1>
 
     <p class="hero__sub" data-reveal data-reveal-delay="0.08s">
@@ -98,12 +152,131 @@
     </p>
 
     <div class="mascot">
-      <span class="mascot__note">evolving slowly...</span>
-      <span class="mascot__tilt">
-        <span class="mascot__frame">
-          <img class="mascot__img" src="assets/mascot-hero.png" alt="The boalbasaur mascot" width="96" height="96">
+      <!-- What the mascot is saying. The text below is what shows with no
+           script: it is also the first line of the idle rotation, so the two
+           must stay in step or the bubble changes the moment main.js runs. -->
+      <span class="mascot__note" id="mascot-note">evolving slowly...</span>
+
+      <!-- Cycled while the console is shut. Not rendered, so the lines the
+           mascot is not saying never reach the accessibility tree. -->
+      <template id="mascot-idle-notes">
+        <li>evolving slowly...</li>
+        <li>Chat with me</li>
+        <li>still photosynthesising</li>
+        <li>psst &mdash; click me</li>
+      </template>
+
+      <!-- data-note is what the mascot says when a control is used. Kept on
+           the controls themselves so a new menu row brings its own line. -->
+      <button class="mascot__button" type="button" id="mascot-button"
+              data-note="Hi there!"
+              aria-expanded="false" aria-controls="retro-panel"
+              aria-label="The boalbasaur mascot. Opens a help menu.">
+        <span class="mascot__tilt">
+          <span class="mascot__frame">
+            <img class="mascot__img" src="assets/mascot-hero.png" alt="" width="96" height="96">
+          </span>
         </span>
-      </span>
+      </button>
+
+      <!-- The mascot's retro console. Every view lives in the markup and the
+           script shows one at a time, typing its text out a character at a
+           time. The copy stays here rather than in main.js: the script reads
+           each [data-type] element's own text once on load, stashes it, and
+           replays it, so this file is still the only place the words live.
+
+           Sits after the button in source order so it reads as the thing the
+           button opens, and so it can just drop into flow on narrow screens
+           where there is no room for it alongside. -->
+      <div class="retro" id="retro-panel" role="dialog" tabindex="-1"
+           aria-label="boalbasaur help menu" hidden>
+
+        <div class="retro__view" data-view="menu">
+          <p class="retro__heading" data-type>DO YOU NEED HELP?</p>
+          <ul class="retro__menu">
+            <li>
+              <button class="retro__row" type="button" data-goto="contact" data-note="Vine Whip me a line." aria-label="Contact">
+                <span class="retro__caret" aria-hidden="true">&#9654;</span><span data-type>CONTACT</span>
+              </button>
+            </li>
+            <li>
+              <button class="retro__row" type="button" data-goto="donate" data-note="I mostly run on sunlight." aria-label="Donate">
+                <span class="retro__caret" aria-hidden="true">&#9654;</span><span data-type>DONATE</span>
+              </button>
+            </li>
+            <li>
+              <button class="retro__row" type="button" data-goto="message" data-note="I&rsquo;m all ears. And bulb." aria-label="Quick message">
+                <span class="retro__caret" aria-hidden="true">&#9654;</span><span data-type>QUICK MESSAGE</span>
+              </button>
+            </li>
+            <li>
+              <button class="retro__row" type="button" data-goto="idea" data-note="Plant it here, I&rsquo;ll water it." aria-label="Share idea">
+                <span class="retro__caret" aria-hidden="true">&#9654;</span><span data-type>SHARE IDEA</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="retro__view" data-view="contact" hidden>
+          <p class="retro__heading" data-type>CONTACT</p>
+          <div class="retro__lines">
+            <p data-type>EMAIL: hello@boalbasaur.com</p>
+            <p data-type>GITHUB: github.com/boalbasaur</p>
+            <p data-type>LINKEDIN: /in/boalbasaur</p>
+          </div>
+          <button class="retro__row retro__row--lead" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
+            <span data-type>&lt; BACK</span>
+          </button>
+        </div>
+
+        <div class="retro__view" data-view="donate" hidden>
+          <p class="retro__heading" data-type>DONATE</p>
+          <p class="retro__body" data-type>If you enjoyed poking around, you can buy me a coffee to keep the lights on.</p>
+          <a class="retro__link" href="https://buymeacoffee.com/boalbasaur" target="_blank" rel="noopener noreferrer">
+            <span data-type>[ SUPPORT &rarr; ]</span>
+          </a>
+          <button class="retro__row retro__row--lead" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
+            <span data-type>&lt; BACK</span>
+          </button>
+        </div>
+
+        <div class="retro__view" data-view="message" hidden>
+          <p class="retro__heading" data-type>QUICK MESSAGE</p>
+          <div data-form>
+            <textarea class="retro__input" rows="3" placeholder="Say hi..." aria-label="Your message"></textarea>
+            <div class="retro__actions">
+              <button class="retro__row" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
+                <span data-type>&lt; BACK</span>
+              </button>
+              <button class="retro__row" type="button" data-send data-note="Got it. Watering it now." aria-label="Send message">
+                <span data-type>SEND &gt;</span>
+              </button>
+            </div>
+          </div>
+          <div data-sent hidden>
+            <p class="retro__body" data-type>MESSAGE SENT! THANKS.</p>
+          </div>
+        </div>
+
+        <div class="retro__view" data-view="idea" hidden>
+          <p class="retro__heading" data-type>SHARE AN IDEA</p>
+          <div data-form>
+            <textarea class="retro__input" rows="3" placeholder="What should I build next?" aria-label="Your idea"></textarea>
+            <div class="retro__actions">
+              <button class="retro__row" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
+                <span data-type>&lt; BACK</span>
+              </button>
+              <button class="retro__row" type="button" data-send data-note="Got it. Watering it now." aria-label="Send idea">
+                <span data-type>SEND &gt;</span>
+              </button>
+            </div>
+          </div>
+          <div data-sent hidden>
+            <p class="retro__body" data-type>IDEA RECEIVED! THANKS.</p>
+          </div>
+        </div>
+
+      </div>
     </div>
   </section>
 

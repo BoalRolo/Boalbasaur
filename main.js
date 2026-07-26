@@ -192,6 +192,359 @@
     });
   }
 
+  /* --- Mascot speech bubble ----------------------------------------------
+     Cycles through idle lines while the console is shut, and says something
+     specific the moment a control is used. Returns the handle the console
+     drives it with, or null when there is no bubble on the page. */
+  function initMascotNote() {
+    var note = document.getElementById('mascot-note');
+    var source = document.getElementById('mascot-idle-notes');
+    if (!note) return null;
+
+    var IDLE_MS = 6000;
+    var SWAP_MS = 180;   // matches the .is-swapping transition
+
+    var lines = source
+      ? Array.prototype.map.call(source.content.querySelectorAll('li'), function (li) {
+          return li.textContent.trim();
+        })
+      : [];
+    var at = 0;
+    var cycle = 0;
+    var swap = 0;
+
+    function set(text) {
+      if (note.textContent === text) return;
+
+      window.clearTimeout(swap);
+      if (reduceMotion.matches) {
+        note.textContent = text;
+        return;
+      }
+      // Out, swap, in — so the bubble never shows two lines cross-fading and
+      // never resizes while a line is still readable.
+      note.classList.add('is-swapping');
+      swap = window.setTimeout(function () {
+        note.textContent = text;
+        note.classList.remove('is-swapping');
+      }, SWAP_MS);
+    }
+
+    function stop() {
+      window.clearInterval(cycle);
+      cycle = 0;
+    }
+
+    // Rotation only runs while the console is shut. Left running, the bubble
+    // would change out from under someone part-way through reading the menu.
+    function resume() {
+      stop();
+      if (lines.length < 2) return;
+      cycle = window.setInterval(function () {
+        at = (at + 1) % lines.length;
+        set(lines[at]);
+      }, IDLE_MS);
+    }
+
+    // The markup's own text is line 0; starting there means no jump on load.
+    if (lines.length) {
+      at = Math.max(0, lines.indexOf(note.textContent.trim()));
+    }
+    resume();
+
+    return {
+      // Says one specific line and holds it there.
+      say: function (text) {
+        if (!text) return;
+        stop();
+        set(text);
+      },
+      resume: function () {
+        if (lines.length) set(lines[at]);
+        resume();
+      }
+    };
+  }
+
+  /* --- Retro console -----------------------------------------------------
+     Clicking the mascot shakes it, then opens a handheld-console dialogue box
+     beside it. Whichever view is showing types its own text out a character at
+     a time; a click or a keypress mid-crawl fills it in, the way those consoles
+     always let you skip ahead. */
+  function initRetroConsole(note) {
+    var button = document.getElementById('mascot-button');
+    var panel = document.getElementById('retro-panel');
+    if (!button || !panel) return;
+
+    // Each control carries its own line in data-note; the mascot just reads it
+    // out. Nothing here needs to know what any of them say.
+    function speak(el) {
+      if (note && el) note.say(el.getAttribute('data-note'));
+    }
+
+    var SHAKE_MS = 420;   // the pixel-shake keyframes, plus a frame to settle
+    var CHAR_MS = 18;
+    var SENT_MS = 1500;
+
+    var tilt = document.querySelector('.mascot__tilt');
+    var rows = [];
+    var views = {};
+    var current = 'menu';
+    var index = 0;
+    var openTimer = 0;
+    var sentTimer = 0;
+    var typeTimer = 0;
+    var fillIn = null;
+
+    Array.prototype.forEach.call(panel.querySelectorAll('.retro__view'), function (el) {
+      views[el.getAttribute('data-view')] = el;
+    });
+
+    // The copy lives in index.html. Read it off the markup once, so the script
+    // can blank each element and replay it without owning any of the words.
+    Array.prototype.forEach.call(panel.querySelectorAll('[data-type]'), function (el) {
+      el.setAttribute('data-text', el.textContent.trim());
+    });
+
+    function pending(root) {
+      return Array.prototype.filter.call(
+        root.querySelectorAll('[data-type]'),
+        function (el) { return !el.closest('[hidden]'); }
+      );
+    }
+
+    // Snaps whatever is mid-crawl to its full text. Safe to call at any time.
+    function settle() {
+      if (typeTimer) cancelAnimationFrame(typeTimer);
+      typeTimer = 0;
+      if (!fillIn) return;
+      fillIn();
+      fillIn = null;
+    }
+
+    function type(root) {
+      settle();
+
+      var targets = pending(root);
+      if (!targets.length) return;
+
+      fillIn = function () {
+        targets.forEach(function (el) {
+          el.textContent = el.getAttribute('data-text');
+          el.classList.remove('is-typing');
+        });
+      };
+
+      if (reduceMotion.matches) {
+        settle();
+        return;
+      }
+
+      // Blank them all up front, so a later line never flashes at full length
+      // while an earlier one is still going.
+      targets.forEach(function (el) { el.textContent = ''; });
+
+      var total = targets.reduce(function (n, el) {
+        return n + el.getAttribute('data-text').length;
+      }, 0);
+      // null, not 0: a zero timestamp is a legitimate start and `!started`
+      // would read it as "not started yet" and slip the clock by a frame.
+      var started = null;
+
+      // Driven off rAF and elapsed time, not one timeout per character. A
+      // backgrounded tab clamps timeouts to one a second, which would leave the
+      // crawl dribbling out a letter at a time for a minute with nobody
+      // watching, then finishing at the wrong speed on return. rAF stops dead
+      // instead, and seeking by elapsed time resumes exactly where it should.
+      function frame(now) {
+        if (started === null) started = now;
+
+        var want = Math.floor((now - started) / CHAR_MS);
+        var used = 0;
+        var frontier = -1;
+
+        targets.forEach(function (el, i) {
+          var text = el.getAttribute('data-text');
+          var take = Math.max(0, Math.min(text.length, want - used));
+          el.textContent = text.slice(0, take);
+          if (frontier === -1 && take < text.length) frontier = i;
+          used += text.length;
+        });
+
+        // The cursor belongs on the first line that is not finished yet.
+        targets.forEach(function (el, i) {
+          el.classList.toggle('is-typing', i === frontier);
+        });
+
+        if (want >= total) {
+          typeTimer = 0;
+          fillIn = null;
+          return;
+        }
+        typeTimer = requestAnimationFrame(frame);
+      }
+
+      typeTimer = requestAnimationFrame(frame);
+    }
+
+    function paint() {
+      rows.forEach(function (row, i) {
+        row.classList.toggle('is-selected', i === index);
+      });
+    }
+
+    // State first, focus second. Driving the caret off the focus event alone
+    // leaves it stuck whenever focus cannot move — a background window, or a
+    // browser that declines the request — and the menu stops responding to the
+    // arrow keys with no way to tell why.
+    function move(to) {
+      if (!rows.length) return;
+      index = (to + rows.length) % rows.length;
+      paint();
+      rows[index].focus();
+    }
+
+    function show(name) {
+      var view = views[name];
+      if (!view) return;
+
+      window.clearTimeout(sentTimer);
+      current = name;
+
+      Object.keys(views).forEach(function (key) {
+        views[key].hidden = key !== name;
+
+        // Reset the send state, so re-entering a view starts on its form.
+        var form = views[key].querySelector('[data-form]');
+        var sent = views[key].querySelector('[data-sent]');
+        if (form && sent) {
+          form.hidden = false;
+          sent.hidden = true;
+        }
+      });
+
+      if (name === 'menu') {
+        index = 0;
+        paint();
+      }
+      type(view);
+    }
+
+    function open() {
+      window.clearTimeout(openTimer);
+      // Greets on the click, not when the panel lands — the shake is the
+      // mascot reacting, and it should be talking through it.
+      speak(button);
+      if (tilt && !reduceMotion.matches) tilt.classList.add('is-shaking');
+
+      openTimer = window.setTimeout(function () {
+        if (tilt) tilt.classList.remove('is-shaking');
+        panel.hidden = false;
+        button.setAttribute('aria-expanded', 'true');
+        show('menu');
+        panel.focus();
+      }, reduceMotion.matches ? 0 : SHAKE_MS);
+    }
+
+    function close() {
+      window.clearTimeout(openTimer);
+      window.clearTimeout(sentTimer);
+      settle();
+      if (tilt) tilt.classList.remove('is-shaking');
+      panel.hidden = true;
+      button.setAttribute('aria-expanded', 'false');
+      if (note) note.resume();   // back to idle chatter
+    }
+
+    function send(view) {
+      var form = view.querySelector('[data-form]');
+      var sent = view.querySelector('[data-sent]');
+      if (!form || !sent) return;
+
+      form.hidden = true;
+      sent.hidden = false;
+      type(sent);
+
+      sentTimer = window.setTimeout(function () {
+        var field = view.querySelector('.retro__input');
+        if (field) field.value = '';
+        show('menu');
+      }, SENT_MS);
+    }
+
+    rows = Array.prototype.slice.call(views.menu.querySelectorAll('.retro__row'));
+    rows.forEach(function (row, i) {
+      // Keeps the caret on whichever row the keyboard is actually on, whether
+      // it got there by arrow key or by Tab.
+      row.addEventListener('focus', function () {
+        index = i;
+        paint();
+      });
+    });
+
+    button.addEventListener('click', function () {
+      if (panel.hidden) open(); else close();
+    });
+
+    panel.addEventListener('click', function (e) {
+      // Skip the crawl, then still do what was clicked — swallowing the click
+      // outright would read as the menu ignoring you.
+      if (typeTimer) settle();
+
+      var goto = e.target.closest('[data-goto]');
+      if (goto) {
+        speak(goto);
+        show(goto.getAttribute('data-goto'));
+        return;
+      }
+
+      var sender = e.target.closest('[data-send]');
+      if (sender) {
+        speak(sender);
+        send(views[current]);
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (panel.hidden) return;
+
+      var inField = !!(e.target.closest && e.target.closest('textarea, input'));
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        settle();
+        if (current === 'menu') {
+          close();
+          button.focus();
+        } else {
+          // Escape out of a view is the same move as BACK, so it borrows that
+          // view's line rather than leaving the bubble on the old one.
+          speak(views[current].querySelector('[data-goto="menu"]'));
+          show('menu');
+        }
+        return;
+      }
+
+      if (inField) return;
+      if (typeTimer && !e.metaKey && !e.ctrlKey && !e.altKey) settle();
+      if (current !== 'menu' || !rows.length) return;
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        move(index + 1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        move(index - 1);
+      } else if (e.key === 'Enter') {
+        // A focused row fires its own click; only stand in when focus is
+        // elsewhere, or the row would be activated twice.
+        if (rows.indexOf(e.target) !== -1) return;
+        e.preventDefault();
+        rows[index].click();
+      }
+    });
+  }
+
   /* --- In-page anchors ---------------------------------------------------
      Eases to the target instead of snapping, and leaves the URL clean: with
      #projects stuck in the address bar, a reload drops you back at the projects
@@ -332,6 +685,7 @@
   initReveal();
   initScrollMotion();
   initMascotLookAt();
+  initRetroConsole(initMascotNote());
   initAnchorScroll();
   initDocPanel();
 })();

@@ -1,54 +1,48 @@
 /* boalbasaur — portfolio
    Implementation of design/Boalbasaur.dc.html */
 
-/* --- Bulbasaur palette ---------------------------------------------------
-   Source swatches (design/uploads/paleta.png):
-     #78AA41 plant      #669437 plant shadow
-     #8ABBB1 body       #739D96 body shadow
-     #2B5953 spots      #E3350D eyes
-
-   How they are used: the two greens carry the leaves, the teals carry the
-   background and the ink, the red is reserved for accents.
-
-   The teals are tinted toward white for anything text sits on. At full
-   strength #8ABBB1 leaves body copy at 3.7:1 and the soft paragraph at
-   2.8:1 — both under the 4.5:1 minimum. Tinted as below, the worst text
-   pairing on the page is 5.07:1. #2B5953 is the lightest the ink can go and
-   still clear AA, so it doubles as the palette's own "spots" colour and as
-   --ink-muted. */
 :root {
-  /* Ink — a dark-teal ramp ending on the palette's #2B5953 */
-  --ink:          #10231f;
-  --ink-strong:   #17332e;
-  --ink-body:     #1e423b;
-  --ink-mid:      #21473f;
-  --ink-soft:     #245049;
-  --ink-softer:   #27544d;
-  --ink-muted:    #2b5953;
+  /* Ink */
+  --ink:          oklch(0.2 0.02 260);
+  --ink-strong:   oklch(0.3 0.02 260);
+  --ink-body:     oklch(0.35 0.02 260);
+  --ink-mid:      oklch(0.4 0.02 260);
+  --ink-soft:     oklch(0.42 0.02 260);
+  --ink-softer:   oklch(0.45 0.02 260);
+  --ink-muted:    oklch(0.5 0.02 260);
 
-  /* Surfaces — tinted body teal */
-  --surface:      #f8fbfa;
-  --surface-alt:  #e4efec;
-  --border:       #cfe0dc;
-  --border-firm:  #b9d0cb;
+  /* Surfaces */
+  --surface:      oklch(0.99 0.005 95);
+  --surface-alt:  oklch(0.94 0.01 95);
+  --border:       oklch(0.9 0.01 95);
+  --border-firm:  oklch(0.85 0.02 95);
 
-  /* Greens — full strength on shapes, darkened where they carry text */
-  --green:        #4a6b28;   /* headline accent (large text, 4.90:1) */
-  --green-dot:    #78aa41;   /* a dot, not text */
-  --green-eyebrow:#3f5c22;
-  --pill-bg:      #dbe9c9;
-  --pill-fg:      #3f5c22;
-  --note-bg:      #dbe9c9;
-  --note-label:   #3f5c22;
-  --note-text:    #3a5520;
-  --leaf-a:       #78aa41;
-  --leaf-b:       #669437;
+  /* Greens */
+  --green:        oklch(0.5 0.13 155);
+  --green-dot:    oklch(0.7 0.14 155);
+  --green-eyebrow:oklch(0.55 0.1 155);
+  --pill-bg:      oklch(0.94 0.03 155);
+  --pill-fg:      oklch(0.35 0.08 155);
+  --note-bg:      oklch(0.95 0.03 155);
+  --note-label:   oklch(0.32 0.09 155);
+  --note-text:    oklch(0.3 0.08 155);
+  /* Five leaf tones, spread across lightness and a little across hue: a couple
+     catching the light, a couple sitting in shade. Decorative shapes at half
+     opacity, so none of them carries a contrast requirement. */
+  --leaf-a:       oklch(0.72 0.13 150);
+  --leaf-b:       oklch(0.6 0.15 145);
+  --leaf-c:       oklch(0.79 0.1 152);
+  --leaf-d:       oklch(0.66 0.14 160);
+  --leaf-e:       oklch(0.53 0.15 143);
 
-  /* Eyes — accents and details only, never a surface */
-  --accent:       #e3350d;
+  --link:         oklch(0.42 0.1 155);
+  --link-hover:   oklch(0.32 0.1 155);
 
-  --link:         #3f5c22;
-  --link-hover:   #2f4519;
+  /* Retro console — the mascot's help menu. Its own near-black-on-bone pair,
+     deliberately outside the page's ink ramp: the point of the panel is that
+     it looks like a different device sitting on top of the page. */
+  --retro-bg:     #fdfdf8;
+  --retro-ink:    #2b2b2b;
 
   --display: 'Space Grotesk', system-ui, sans-serif;
   --body: 'Inter', system-ui, sans-serif;
@@ -73,12 +67,11 @@ body {
   margin: 0;
   font-family: var(--body);
   color: var(--ink);
-  /* Shared between the two body teals, lightest at the top. */
   background: linear-gradient(
     180deg,
-    #dae9e6 0%,
-    #d0e4e0 45%,
-    #c0d3d0 100%
+    oklch(0.97 0.015 145) 0%,
+    oklch(0.965 0.02 95) 40%,
+    oklch(0.96 0.03 155) 100%
   );
 }
 
@@ -129,7 +122,7 @@ a:hover { color: var(--link-hover); }
 }
 .blob--1 > i {
   border-radius: 50%;
-  background: #cfe3b4;   /* plant green, washed out */
+  background: oklch(0.9 0.06 155);
   filter: blur(2px);
   opacity: 0.6;
   animation: float-slow 7s ease-in-out infinite;
@@ -141,7 +134,7 @@ a:hover { color: var(--link-hover); }
 }
 .blob--2 > i {
   border-radius: 50%;
-  background: #a9c8c2;   /* body shadow teal */
+  background: oklch(0.93 0.05 25);
   opacity: 0.5;
   animation: float-slow 9s ease-in-out infinite reverse;
 }
@@ -152,7 +145,7 @@ a:hover { color: var(--link-hover); }
 }
 .blob--3 > i {
   border-radius: 40% 60% 55% 45%;
-  background: #bcd9b0;   /* plant green, washed out */
+  background: oklch(0.88 0.07 155);
   opacity: 0.5;
 }
 
@@ -173,13 +166,11 @@ a:hover { color: var(--link-hover); }
   right: 0;
   bottom: 0;
   height: 104px;
-  /* Deepens toward the body-shadow teal. Stops short of #2B5953 so the footer
-     text keeps its 4.62:1 against it. */
   background: linear-gradient(
     180deg,
-    rgba(115, 157, 150, 0) 0%,
-    rgba(115, 157, 150, 0.34) 42%,
-    rgba(115, 157, 150, 0.62) 100%
+    oklch(0.93 0.05 150 / 0) 0%,
+    oklch(0.91 0.055 150 / 0.5) 42%,
+    oklch(0.89 0.06 148 / 0.85) 100%
   );
 }
 
@@ -192,10 +183,18 @@ a:hover { color: var(--link-hover); }
 }
 /* Landed leaves sit a little heavier than the ones still in the air. */
 .leaf--ground { opacity: 0.62; }
-.leaf:nth-of-type(even) {
-  background: var(--leaf-b);
-  border-radius: 100% 0% 100% 0%;
-}
+
+/* Shape mirrors on a period of two and tone cycles on a period of five, so the
+   two only line up again every tenth leaf. Kept as separate rules rather than
+   one alternating block: with the litter line this dense, tying tone to the
+   shape would band it into visible stripes. `.leaves` holds no other <i>, so
+   nth-of-type counts leaves and nothing else. */
+.leaf:nth-of-type(even)  { border-radius: 100% 0% 100% 0%; }
+.leaf:nth-of-type(5n+1)  { background: var(--leaf-a); }
+.leaf:nth-of-type(5n+2)  { background: var(--leaf-b); }
+.leaf:nth-of-type(5n+3)  { background: var(--leaf-c); }
+.leaf:nth-of-type(5n+4)  { background: var(--leaf-d); }
+.leaf:nth-of-type(5n)    { background: var(--leaf-e); }
 
 @keyframes float-slow {
   0%, 100% { transform: translateY(0); }
@@ -303,8 +302,6 @@ a:hover { color: var(--link-hover); }
   max-width: 780px;
 }
 .hero__title-accent { color: var(--green); }
-/* The one place the eye red appears in type — a full stop, nothing more. */
-.hero__title-dot { color: var(--accent); }
 
 .hero__sub {
   font-size: 19px;
@@ -325,17 +322,34 @@ a:hover { color: var(--link-hover); }
   display: inline-block;
   margin-top: 72px;
 }
+.mascot__button {
+  display: inline-block;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
 .mascot__note {
   position: absolute;
   top: -46px;
   left: 8px;
+  z-index: 6;   /* stays above the console panel */
   background: var(--ink);
-  color: #eef6f4;
+  color: oklch(0.98 0.005 95);
   font-size: 13px;
   font-weight: 600;
   padding: 9px 14px;
   border-radius: 14px 14px 14px 4px;
   white-space: nowrap;
+  /* The line swaps out and back in rather than cross-fading, so the bubble is
+     never mid-resize with readable text in it. */
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.mascot__note.is-swapping {
+  opacity: 0;
+  transform: translateY(4px);
 }
 /* Three stacked transforms, one per layer, so they never overwrite each other:
    .mascot__tilt leans the head toward the pointer, .mascot__frame carries the
@@ -374,6 +388,176 @@ a:hover { color: var(--link-hover); }
     translate(calc(var(--mascot-look-x) * 1px), calc(var(--mascot-look-y) * 1px))
     scale(1.18);
   transition: transform 0.18s ease-out;
+}
+
+/* --- Retro console ------------------------------------------------------
+   Clicking the mascot shakes it, then this pops in beside it and types its
+   text out a character at a time, like a handheld console's dialogue box. */
+
+/* Applied to the same element the pointer tilt sits on. While an animation is
+   running it wins over the element's own transform, so the tilt is suspended
+   for the length of the shake and resumes afterwards on its own — no need to
+   suppress it from script. */
+.mascot__tilt.is-shaking { animation: pixel-shake 0.4s ease-in-out; }
+
+@keyframes pixel-shake {
+  0%, 100% { transform: translateX(0)    rotate(0deg); }
+  20%      { transform: translateX(-6px) rotate(-6deg); }
+  40%      { transform: translateX(6px)  rotate(6deg); }
+  60%      { transform: translateX(-4px) rotate(-4deg); }
+  80%      { transform: translateX(4px)  rotate(4deg); }
+}
+
+.retro {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 28px);
+  z-index: 5;
+  width: 290px;
+  padding: 16px 18px;
+  background: var(--retro-bg);
+  /* The frame is one `double` border, not a box inside a box: `double` is
+     already two lines with a gap, which is exactly the console look. */
+  border: 6px double var(--retro-ink);
+  border-radius: 4px;
+  box-shadow: 0 12px 28px rgba(20, 20, 15, 0.18);
+  font-family: 'Courier New', monospace;
+  color: var(--retro-ink);
+  animation: retro-pop 0.22s ease-out;
+}
+
+@keyframes retro-pop {
+  from { opacity: 0; transform: scale(0.85) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.retro__heading {
+  margin: 0 0 14px;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
+.retro__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.retro__row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--retro-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.retro__row:hover { color: var(--green); }
+
+/* Reserved and hidden rather than added on select, so moving down the menu
+   never nudges the labels sideways. Keeps its own colour so a hovered row
+   tinting green does not drag the caret green with it. */
+.retro__caret {
+  flex: none;
+  width: 14px;
+  visibility: hidden;
+  color: var(--retro-ink);
+}
+.retro__row.is-selected .retro__caret { visibility: visible; }
+
+/* The caret is the entire selection marker — no colour shift, no bolding, and
+   no focus ring. Scoped to the menu on purpose: these rows always carry the
+   caret, which tracks focus (arrow keys and Tab both move it) and reads more
+   clearly than a ring drawn around a text label. BACK and SEND live outside
+   this list, have no caret, and so keep the page's normal focus outline. */
+.retro__menu .retro__row:focus-visible { outline: none; }
+
+/* BACK on its own line, under content rather than beside it. */
+.retro__row--lead {
+  width: auto;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.retro__lines {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 14px;
+  font-size: 13.5px;
+}
+.retro__lines p { margin: 0; }
+
+.retro__body {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.retro__body:last-child { margin-bottom: 0; }
+
+.retro__link {
+  display: inline-block;
+  margin-bottom: 14px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--retro-ink);
+}
+.retro__link:hover { color: var(--green); }
+
+.retro__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.retro__actions .retro__row {
+  width: auto;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.retro__input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 8px;
+  border: 2px solid var(--retro-ink);
+  border-radius: 2px;
+  background: var(--retro-bg);
+  color: var(--retro-ink);
+  font-family: inherit;
+  font-size: 13px;
+  resize: none;
+}
+
+/* The block cursor chasing the text as it types. Drawn on the element being
+   typed into, so it moves line to line by itself. */
+[data-type].is-typing::after {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 1px;
+  background: currentColor;
+  vertical-align: -0.14em;
+  animation: retro-caret 0.6s steps(1) infinite;
+}
+
+@keyframes retro-caret {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
 }
 
 /* --- Projects ----------------------------------------------------------- */
@@ -446,7 +630,7 @@ a:hover { color: var(--link-hover); }
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: #eef5f3;
+  background: oklch(0.96 0.006 95);
   border-bottom: 1px dashed var(--border-firm);
   color: var(--ink-muted);
   font-size: 14px;
@@ -665,6 +849,17 @@ a:hover { color: var(--link-hover); }
   .card__shot { height: 220px; }
   .hero__sub { font-size: 17px; }
   .doc-panel__inner { padding: 28px 24px; }
+
+  /* No room for 290px beside a 96px mascot here, so the console drops into
+     flow underneath it instead of being absolutely placed off its right edge.
+     .mascot goes block so the panel gets the row to itself; the button keeps
+     the mascot at its own size rather than stretching across it. */
+  .mascot { display: block; }
+  .retro {
+    position: static;
+    width: min(290px, 100%);
+    margin-top: 20px;
+  }
 }
 
 /* Touch devices have no hover, so surface both actions permanently. */
@@ -685,6 +880,11 @@ a:hover { color: var(--link-hover); }
   /* Leaves keep their resting rotation — main.js never moves them here. */
   .blob, .blob > i, .mascot__frame { animation: none; }
   .blob, .mascot__tilt, .mascot__img { transform: none; transition: none; }
+  /* main.js also skips the shake delay and types nothing — the console just
+     appears with its text already in place. */
+  .mascot__tilt.is-shaking, .retro, [data-type].is-typing::after { animation: none; }
+  /* main.js swaps the bubble's line outright here instead of fading it. */
+  .mascot__note { transition: none; }
   [data-reveal] {
     opacity: 1;
     transform: none;
