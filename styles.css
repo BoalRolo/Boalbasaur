@@ -1,36 +1,54 @@
 /* boalbasaur — portfolio
    Implementation of design/Boalbasaur.dc.html */
 
+/* --- Bulbasaur palette ---------------------------------------------------
+   Source swatches (design/uploads/paleta.png):
+     #78AA41 plant      #669437 plant shadow
+     #8ABBB1 body       #739D96 body shadow
+     #2B5953 spots      #E3350D eyes
+
+   How they are used: the two greens carry the leaves, the teals carry the
+   background and the ink, the red is reserved for accents.
+
+   The teals are tinted toward white for anything text sits on. At full
+   strength #8ABBB1 leaves body copy at 3.7:1 and the soft paragraph at
+   2.8:1 — both under the 4.5:1 minimum. Tinted as below, the worst text
+   pairing on the page is 5.07:1. #2B5953 is the lightest the ink can go and
+   still clear AA, so it doubles as the palette's own "spots" colour and as
+   --ink-muted. */
 :root {
-  /* Ink */
-  --ink:          oklch(0.2 0.02 260);
-  --ink-strong:   oklch(0.3 0.02 260);
-  --ink-body:     oklch(0.35 0.02 260);
-  --ink-mid:      oklch(0.4 0.02 260);
-  --ink-soft:     oklch(0.42 0.02 260);
-  --ink-softer:   oklch(0.45 0.02 260);
-  --ink-muted:    oklch(0.5 0.02 260);
+  /* Ink — a dark-teal ramp ending on the palette's #2B5953 */
+  --ink:          #10231f;
+  --ink-strong:   #17332e;
+  --ink-body:     #1e423b;
+  --ink-mid:      #21473f;
+  --ink-soft:     #245049;
+  --ink-softer:   #27544d;
+  --ink-muted:    #2b5953;
 
-  /* Surfaces */
-  --surface:      oklch(0.99 0.005 95);
-  --surface-alt:  oklch(0.94 0.01 95);
-  --border:       oklch(0.9 0.01 95);
-  --border-firm:  oklch(0.85 0.02 95);
+  /* Surfaces — tinted body teal */
+  --surface:      #f8fbfa;
+  --surface-alt:  #e4efec;
+  --border:       #cfe0dc;
+  --border-firm:  #b9d0cb;
 
-  /* Greens */
-  --green:        oklch(0.5 0.13 155);
-  --green-dot:    oklch(0.7 0.14 155);
-  --green-eyebrow:oklch(0.55 0.1 155);
-  --pill-bg:      oklch(0.94 0.03 155);
-  --pill-fg:      oklch(0.35 0.08 155);
-  --note-bg:      oklch(0.95 0.03 155);
-  --note-label:   oklch(0.32 0.09 155);
-  --note-text:    oklch(0.3 0.08 155);
-  --leaf-a:       oklch(0.72 0.13 150);
-  --leaf-b:       oklch(0.6 0.15 145);
+  /* Greens — full strength on shapes, darkened where they carry text */
+  --green:        #4a6b28;   /* headline accent (large text, 4.90:1) */
+  --green-dot:    #78aa41;   /* a dot, not text */
+  --green-eyebrow:#3f5c22;
+  --pill-bg:      #dbe9c9;
+  --pill-fg:      #3f5c22;
+  --note-bg:      #dbe9c9;
+  --note-label:   #3f5c22;
+  --note-text:    #3a5520;
+  --leaf-a:       #78aa41;
+  --leaf-b:       #669437;
 
-  --link:         oklch(0.42 0.1 155);
-  --link-hover:   oklch(0.32 0.1 155);
+  /* Eyes — accents and details only, never a surface */
+  --accent:       #e3350d;
+
+  --link:         #3f5c22;
+  --link-hover:   #2f4519;
 
   --display: 'Space Grotesk', system-ui, sans-serif;
   --body: 'Inter', system-ui, sans-serif;
@@ -55,11 +73,12 @@ body {
   margin: 0;
   font-family: var(--body);
   color: var(--ink);
+  /* Shared between the two body teals, lightest at the top. */
   background: linear-gradient(
     180deg,
-    oklch(0.97 0.015 145) 0%,
-    oklch(0.965 0.02 95) 40%,
-    oklch(0.96 0.03 155) 100%
+    #dae9e6 0%,
+    #d0e4e0 45%,
+    #c0d3d0 100%
   );
 }
 
@@ -110,7 +129,7 @@ a:hover { color: var(--link-hover); }
 }
 .blob--1 > i {
   border-radius: 50%;
-  background: oklch(0.9 0.06 155);
+  background: #cfe3b4;   /* plant green, washed out */
   filter: blur(2px);
   opacity: 0.6;
   animation: float-slow 7s ease-in-out infinite;
@@ -122,7 +141,7 @@ a:hover { color: var(--link-hover); }
 }
 .blob--2 > i {
   border-radius: 50%;
-  background: oklch(0.93 0.05 25);
+  background: #a9c8c2;   /* body shadow teal */
   opacity: 0.5;
   animation: float-slow 9s ease-in-out infinite reverse;
 }
@@ -133,7 +152,7 @@ a:hover { color: var(--link-hover); }
 }
 .blob--3 > i {
   border-radius: 40% 60% 55% 45%;
-  background: oklch(0.88 0.07 155);
+  background: #bcd9b0;   /* plant green, washed out */
   opacity: 0.5;
 }
 
@@ -154,11 +173,13 @@ a:hover { color: var(--link-hover); }
   right: 0;
   bottom: 0;
   height: 104px;
+  /* Deepens toward the body-shadow teal. Stops short of #2B5953 so the footer
+     text keeps its 4.62:1 against it. */
   background: linear-gradient(
     180deg,
-    oklch(0.93 0.05 150 / 0) 0%,
-    oklch(0.91 0.055 150 / 0.5) 42%,
-    oklch(0.89 0.06 148 / 0.85) 100%
+    rgba(115, 157, 150, 0) 0%,
+    rgba(115, 157, 150, 0.34) 42%,
+    rgba(115, 157, 150, 0.62) 100%
   );
 }
 
@@ -282,6 +303,8 @@ a:hover { color: var(--link-hover); }
   max-width: 780px;
 }
 .hero__title-accent { color: var(--green); }
+/* The one place the eye red appears in type — a full stop, nothing more. */
+.hero__title-dot { color: var(--accent); }
 
 .hero__sub {
   font-size: 19px;
@@ -307,7 +330,7 @@ a:hover { color: var(--link-hover); }
   top: -46px;
   left: 8px;
   background: var(--ink);
-  color: oklch(0.98 0.005 95);
+  color: #eef6f4;
   font-size: 13px;
   font-weight: 600;
   padding: 9px 14px;
@@ -423,7 +446,7 @@ a:hover { color: var(--link-hover); }
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background: oklch(0.96 0.006 95);
+  background: #eef5f3;
   border-bottom: 1px dashed var(--border-firm);
   color: var(--ink-muted);
   font-size: 14px;

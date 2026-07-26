@@ -16,13 +16,14 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 WIDTH, HEIGHT = 1200, 630
 
-# The body gradient's stops, sampled from styles.css and converted to sRGB.
-TOP = (238, 247, 236)
-BOTTOM = (232, 245, 234)
+# The body gradient's stops, from styles.css (Bulbasaur palette).
+TOP = (0xDA, 0xE9, 0xE6)
+BOTTOM = (0xC0, 0xD3, 0xD0)
 
-INK = (26, 29, 36)
-GREEN = (35, 105, 62)
-MUTED = (93, 100, 111)
+INK = (0x10, 0x23, 0x1F)      # --ink
+GREEN = (0x4A, 0x6B, 0x28)    # --green
+MUTED = (0x2B, 0x59, 0x53)    # --ink-muted
+ACCENT = (0xE3, 0x35, 0x0D)   # --accent, the full stop only
 
 LOGO_HEIGHT = 132
 MARGIN = 96
@@ -73,11 +74,15 @@ def main():
 
     headline = load_font(92)
     draw.text((MARGIN, 286), "Things I've grown,", font=headline, fill=INK)
-    draw.text((MARGIN, 392), "laid out properly.", font=headline, fill=GREEN)
+
+    # The full stop is the one place the eye red appears, same as on the page.
+    draw.text((MARGIN, 392), "laid out properly", font=headline, fill=GREEN)
+    stop_x = MARGIN + draw.textlength("laid out properly", font=headline)
+    draw.text((stop_x, 392), ".", font=headline, fill=ACCENT)
 
     # Placed off the second line's actual ink, not a guessed offset — the
-    # descenders of "properly." reach well below the nominal baseline.
-    _, _, _, headline_bottom = draw.textbbox((MARGIN, 392), "laid out properly.",
+    # descenders of "properly" reach well below the nominal baseline.
+    _, _, _, headline_bottom = draw.textbbox((MARGIN, 392), "laid out properly",
                                              font=headline)
     tagline = load_font(34)
     draw.text((MARGIN, headline_bottom + 34),
