@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+.AppleDouble
+Icon?
+
+# Screenshots dropped into the project folder — these get deployed otherwise
+Captura de ecrã*.png
+Screenshot*.png
+Screen Shot*.png
+
+# Local tooling
+.claude/

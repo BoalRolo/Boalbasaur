@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  body{margin:0;background:linear-gradient(180deg, oklch(0.97 0.015 145) 0%, oklch(0.965 0.02 95) 40%, oklch(0.96 0.03 155) 100%);}
+  .leaf{position:absolute;background:oklch(0.72 0.13 150);border-radius:0% 100% 0% 100%;opacity:0.5;z-index:0;pointer-events:none}
+  .leaf2{position:absolute;background:oklch(0.6 0.15 145);border-radius:100% 0% 100% 0%;opacity:0.45;z-index:0;pointer-events:none}
+  a{color:oklch(0.42 0.1 155);text-decoration:none;}
+  a:hover{color:oklch(0.32 0.1 155);}
+  @keyframes gentleBounce{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
+  @keyframes floatSlow{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+  @keyframes blink{0%,90%,100%{transform:scaleY(1)}95%{transform:scaleY(0.1)}}
+</style>
+</helmet>
+
+<div style="position:relative;font-family:'Inter',system-ui,sans-serif;color:oklch(0.2 0.02 260);overflow:hidden;min-height:100vh">
+
+  <div style="position:absolute;top:120px;left:-60px;width:220px;height:220px;border-radius:50%;background:oklch(0.9 0.06 155);filter:blur(2px);opacity:0.6;z-index:0;animation:floatSlow 7s ease-in-out infinite;transform:{{ shapeTransforms.blob1 }}"></div>
+  <div style="position:absolute;top:900px;right:-80px;width:280px;height:280px;border-radius:50%;background:oklch(0.93 0.05 25);opacity:0.5;z-index:0;animation:floatSlow 9s ease-in-out infinite reverse;transform:{{ shapeTransforms.blob2 }}"></div>
+  <div style="position:absolute;top:1700px;left:30%;width:160px;height:160px;border-radius:40% 60% 55% 45%;background:oklch(0.88 0.07 155);opacity:0.5;z-index:0;transform:{{ shapeTransforms.blob3 }}"></div>
+
+  <header style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:32px 56px;max-width:1200px;margin:0 auto;box-sizing:border-box">
+    <div style="display:flex;align-items:center;gap:12px">
+      <image-slot id="avatar-slot" shape="circle" style="width:44px;height:44px;flex:none" placeholder="Avatar" src="uploads/pasted-1785025054855-0.png"></image-slot>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;letter-spacing:-0.02em">boalbasaur</span>
+    </div>
+    <a href="#projects" style="font-size:14px;font-weight:600;color:oklch(0.2 0.02 260);border:1.5px solid oklch(0.85 0.02 95);padding:9px 18px;border-radius:100px">See projects &darr;</a>
+  </header>
+
+  <section style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:64px 56px 120px;box-sizing:border-box">
+    <div data-reveal-id="hero-badge" style="{{ revealStyles.heroBadge }};display:inline-flex;align-items:center;gap:10px;background:oklch(0.99 0.005 95);border:1px solid oklch(0.9 0.01 95);padding:8px 16px;border-radius:100px;font-size:13px;font-weight:600;color:oklch(0.4 0.02 260);margin-bottom:28px">
+      <span style="width:8px;height:8px;border-radius:50%;background:oklch(0.7 0.14 155);display:inline-block"></span>
+      Open for new projects
+    </div>
+
+    <h1 data-reveal-id="hero-title" style="{{ revealStyles.heroTitle }};font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(40px,6vw,76px);line-height:1.02;letter-spacing:-0.03em;margin:0 0 24px;max-width:780px">
+      Things I've built,<br><span style="color:oklch(0.5 0.13 155)">laid out properly.</span>
+    </h1>
+
+    <p data-reveal-id="hero-sub" style="{{ revealStyles.heroSub }};font-size:19px;line-height:1.6;color:oklch(0.42 0.02 260);max-width:560px;margin:0 0 8px">
+      I'm boalbasaur &mdash; I build things and write them down here. Hover left on any project to visit it, hover right to read the story behind it.
+    </p>
+
+    <div style="position:relative;display:inline-block;margin-top:72px">
+      <div style="position:absolute;top:-46px;left:8px;background:oklch(0.2 0.02 260);color:oklch(0.98 0.005 95);font-size:13px;font-weight:600;padding:9px 14px;border-radius:14px 14px 14px 4px;white-space:nowrap">
+        evolving slowly...
+      </div>
+      <div style="{{ mascotWrapStyle }}">
+        <image-slot id="hero-mascot" shape="circle" style="width:96px;height:96px;animation:gentleBounce 3.4s ease-in-out infinite" placeholder="Mascot" src="uploads/pasted-1785025054855-0.png"></image-slot>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 56px 140px;box-sizing:border-box;overflow:visible">
+    <div data-reveal-id="projects-heading" style="{{ revealStyles.projectsHeading }};display:flex;align-items:baseline;justify-content:space-between;margin-bottom:36px;gap:16px;flex-wrap:wrap">
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;letter-spacing:-0.02em;margin:0">Projects</h2>
+      <span style="font-size:14px;color:oklch(0.5 0.02 260)">hover left = visit &middot; hover right = doc</span>
+    </div>
+
+    <div style="{{ leafStyles.l0 }}"></div>
+    <div style="{{ leafStyles.l1 }}"></div>
+    <div style="{{ leafStyles.l2 }}"></div>
+    <div style="{{ leafStyles.l3 }}"></div>
+    <div style="{{ leafStyles.l4 }}"></div>
+    <div style="{{ leafStyles.l5 }}"></div>
+    <div style="{{ leafStyles.l6 }}"></div>
+    <div style="{{ leafStyles.l7 }}"></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+      <sc-for list="{{ projects }}" as="p" hint-placeholder-count="3">
+        <div data-reveal-id="{{ p.id }}" style="{{ p.cardStyle }};border-radius:20px;border:1px solid oklch(0.9 0.01 95);background:oklch(0.99 0.005 95);overflow:hidden;box-shadow:0 1px 2px rgba(20,20,15,0.04);display:flex;flex-direction:column">
+          <div style="position:relative;width:100%;height:260px;overflow:hidden;flex:none" onMouseLeave="{{ onCardLeave }}">
+            <image-slot id="{{ p.shotId }}" shape="rect" style="width:100%;height:100%" placeholder="{{ p.shotPlaceholder }}"></image-slot>
+
+            <div onMouseEnter="{{ () => onHover(p.id, 'left') }}" onClick="{{ () => onVisit(p.liveUrl) }}" style="position:absolute;top:0;left:0;width:50%;height:100%;cursor:pointer;display:flex;align-items:flex-end;padding:26px;box-sizing:border-box;background:{{ p.leftScrim }};transition:background 0.25s ease">
+              <span style="{{ p.leftLabelStyle }};font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;color:#fff;display:flex;align-items:center;gap:10px">
+                Check website <span style="font-size:22px">&rarr;</span>
+              </span>
+            </div>
+
+            <div onMouseEnter="{{ () => onHover(p.id, 'right') }}" onClick="{{ () => onOpenDoc(p.id) }}" style="position:absolute;top:0;right:0;width:50%;height:100%;cursor:pointer;display:flex;align-items:flex-end;justify-content:flex-end;padding:26px;box-sizing:border-box;background:{{ p.rightScrim }};transition:background 0.25s ease">
+              <span style="{{ p.rightLabelStyle }};font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:20px;color:#fff;display:flex;align-items:center;gap:10px">
+                <span style="font-size:18px">&#9776;</span> Doc
+              </span>
+            </div>
+          </div>
+
+          <div style="padding:20px 22px 22px;display:flex;flex-direction:column;gap:12px;flex:1">
+            <h3 style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:19px;margin:0">{{ p.title }}</h3>
+            <p style="font-size:14px;color:oklch(0.45 0.02 260);margin:0">{{ p.tagline }}</p>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <sc-for list="{{ p.tech }}" as="t" hint-placeholder-count="3">
+                <span style="font-size:11.5px;font-weight:600;padding:5px 10px;border-radius:100px;background:oklch(0.94 0.03 155);color:oklch(0.35 0.08 155)">{{ t }}</span>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <footer style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 56px 64px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;color:oklch(0.5 0.02 260);font-size:13px">
+    <span>&copy; 2026 boalbasaur</span>
+    <span>built one project at a time</span>
+  </footer>
+
+  <sc-if value="{{ openProject }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ onCloseDoc }}" style="position:fixed;inset:0;background:rgba(20,20,15,0.35);z-index:20;opacity:{{ overlayOpacity }};transition:opacity 0.28s ease"></div>
+    <div style="position:fixed;top:0;right:0;height:100%;width:min(520px,92vw);background:oklch(0.99 0.005 95);z-index:21;box-shadow:-24px 0 60px rgba(20,20,15,0.12);transform:{{ panelTransform }};transition:transform 0.32s cubic-bezier(0.22,1,0.36,1);overflow-y:auto;box-sizing:border-box">
+      <div style="padding:36px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px">
+          <div>
+            <div style="font-size:12.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.55 0.1 155);margin-bottom:8px">Project doc</div>
+            <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;margin:0;letter-spacing:-0.02em">{{ openProject.title }}</h2>
+          </div>
+          <button onClick="{{ onCloseDoc }}" style="border:none;background:oklch(0.94 0.01 95);width:36px;height:36px;border-radius:50%;font-size:16px;cursor:pointer;flex:none">&times;</button>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:26px">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:oklch(0.3 0.02 260);margin-bottom:6px">What it is</div>
+            <p style="font-size:15px;line-height:1.65;color:oklch(0.35 0.02 260);margin:0">{{ openProject.whatItIs }}</p>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:oklch(0.3 0.02 260);margin-bottom:6px">Motivation</div>
+            <p style="font-size:15px;line-height:1.65;color:oklch(0.35 0.02 260);margin:0">{{ openProject.motivation }}</p>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:oklch(0.3 0.02 260);margin-bottom:6px">Purpose</div>
+            <p style="font-size:15px;line-height:1.65;color:oklch(0.35 0.02 260);margin:0">{{ openProject.purpose }}</p>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:oklch(0.3 0.02 260);margin-bottom:6px">Challenges</div>
+            <p style="font-size:15px;line-height:1.65;color:oklch(0.35 0.02 260);margin:0">{{ openProject.difficulties }}</p>
+          </div>
+          <div style="background:oklch(0.95 0.03 155);border-radius:14px;padding:18px 20px">
+            <div style="font-size:13px;font-weight:700;color:oklch(0.32 0.09 155);margin-bottom:6px">What I learned</div>
+            <p style="font-size:15px;line-height:1.65;color:oklch(0.3 0.08 155);margin:0">{{ openProject.learnings }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const PROJECTS = [
+  {
+    id: 'card0', shotId: 'shot-0', shotPlaceholder: 'Website screenshot',
+    title: 'Pixel Pantry', tagline: 'A recipe app that turns whatever is in your fridge into a plan.',
+    tech: ['React', 'Node', 'Postgres'], liveUrl: 'https://example.com',
+    whatItIs: 'A web app where you type in the ingredients you have and get back recipes ranked by how few extra items you would need to buy.',
+    motivation: 'I kept opening the fridge with no idea what to cook, and every recipe app assumed I already had a full pantry.',
+    purpose: 'To practice building a full product end to end: a real backend, a matching algorithm, and a UI people would actually enjoy using.',
+    learnings: 'Got comfortable designing a schema for messy, user-generated ingredient data, and learned how much UX work goes into "good enough" search.',
+    difficulties: 'Matching loose ingredient names (e.g. "tomato" vs "cherry tomatoes") was harder than expected and needed a small normalization layer.'
+  },
+  {
+    id: 'card1', shotId: 'shot-1', shotPlaceholder: 'Website screenshot',
+    title: 'Routewise', tagline: 'A trip planner that optimizes multi-stop road trips for scenery, not just speed.',
+    tech: ['Vue', 'Mapbox', 'Python'], liveUrl: 'https://example.com',
+    whatItIs: 'A route planner where you drop pins for places you want to see, and it reorders and suggests the drive that balances time against detour-worthy stops.',
+    motivation: 'Planning a road trip with friends always turned into a spreadsheet fight over the "best" order to visit places.',
+    purpose: 'To explore routing algorithms and mapping APIs, and to ship something my friends would actually use on our next trip.',
+    learnings: 'Learned how to work with real-world map data and constraint-based optimization, and how to communicate trade-offs simply in the UI.',
+    difficulties: 'Balancing "shortest route" against "most interesting route" needed a scoring system that took a few iterations to feel right.'
+  },
+  {
+    id: 'card2', shotId: 'shot-2', shotPlaceholder: 'Website screenshot',
+    title: 'Loopline', tagline: 'A tiny browser tool for sketching short audio loops without opening a DAW.',
+    tech: ['TypeScript', 'Web Audio API'], liveUrl: 'https://example.com',
+    whatItIs: 'A minimal step-sequencer that runs entirely in the browser, for quickly sketching a beat idea without launching a full production app.',
+    motivation: 'I wanted to capture musical ideas the moment they happened, but opening a heavy DAW always killed the momentum.',
+    purpose: 'To get properly comfortable with the Web Audio API and timing-accurate scheduling in JavaScript.',
+    learnings: 'Learned how audio scheduling actually works under the hood, and why naive setTimeout-based sequencers drift out of sync.',
+    difficulties: 'Keeping playback perfectly on-beat across tabs and devices took a scheduling rewrite using a look-ahead timer pattern.'
+  }
+];
+
+class Component extends DCLogic {
+  state = { visible: {}, hover: null, openId: null, panelIn: false, scrollY: 0, mouseY: 0, mascotTop: 300 };
+
+  LEAVES = [
+    { id: 'l0', top: -40, left: -24, width: 70, height: 110, rotate: -18, color: 'oklch(0.72 0.13 150)' },
+    { id: 'l1', top: 220, right: -20, width: 54, height: 90, rotate: 24, color: 'oklch(0.6 0.15 145)' },
+    { id: 'l2', bottom: -30, left: '38%', width: 48, height: 80, rotate: 8, color: 'oklch(0.72 0.13 150)' },
+    { id: 'l3', top: 180, left: '31%', width: 60, height: 100, rotate: -30, color: 'oklch(0.6 0.15 145)' },
+    { id: 'l4', top: 400, left: -30, width: 56, height: 92, rotate: 30, color: 'oklch(0.72 0.13 150)' },
+    { id: 'l5', top: 480, right: '64%', width: 64, height: 104, rotate: -12, color: 'oklch(0.6 0.15 145)' },
+    { id: 'l6', top: 180, right: -26, width: 52, height: 86, rotate: -20, color: 'oklch(0.72 0.13 150)' },
+    { id: 'l7', bottom: -20, right: '20%', width: 46, height: 78, rotate: 16, color: 'oklch(0.6 0.15 145)' }
+  ];
+
+  componentDidMount() {
+    const checkVisible = () => {
+      const vh = window.innerHeight;
+      const newly = {};
+      document.querySelectorAll('[data-reveal-id]').forEach((el) => {
+        const id = el.getAttribute('data-reveal-id');
+        if (this.state.visible[id] || newly[id]) return;
+        const r = el.getBoundingClientRect();
+        if (r.top < vh * 0.9 && r.bottom > 0) newly[id] = true;
+      });
+      if (Object.keys(newly).length) this.setState((s) => ({ visible: { ...s.visible, ...newly } }));
+    };
+    this._checkVisible = checkVisible;
+
+    let ticking = false;
+    this._onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        this.setState({ scrollY: window.scrollY });
+        checkVisible();
+        ticking = false;
+      });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    window.addEventListener('resize', this._onScroll, { passive: true });
+    checkVisible();
+    this._pollId = setInterval(checkVisible, 400);
+
+    this._onMouseMove = (e) => this.setState({ mouseY: e.clientY });
+    window.addEventListener('mousemove', this._onMouseMove, { passive: true });
+  }
+
+  componentWillUnmount() {
+    if (this._onScroll) {
+      window.removeEventListener('scroll', this._onScroll);
+      window.removeEventListener('resize', this._onScroll);
+    }
+    if (this._pollId) clearInterval(this._pollId);
+    if (this._onMouseMove) window.removeEventListener('mousemove', this._onMouseMove);
+  }
+
+  onHover = (id, side) => this.setState({ hover: { id, side } });
+  onCardLeave = () => this.setState({ hover: null });
+  onVisit = (url) => window.open(url, '_blank');
+
+  onOpenDoc = (id) => {
+    this.setState({ openId: id, panelIn: false });
+    requestAnimationFrame(() => requestAnimationFrame(() => this.setState({ panelIn: true })));
+  };
+
+  onCloseDoc = () => {
+    this.setState({ panelIn: false });
+    setTimeout(() => this.setState((s) => (s.openId ? { openId: null } : null)), 320);
+  };
+
+  renderVals() {
+    const { visible, hover, openId, panelIn, scrollY, mouseY } = this.state;
+
+    const mascotTilt = Math.max(-14, Math.min(14, (mouseY - 300) / 18));
+    const fall = Math.min(Math.max((scrollY - 150) * 0.35, 0), 300);
+    const leafStyles = {};
+    this.LEAVES.forEach((l, i) => {
+      leafStyles[l.id] = {
+        position: 'absolute',
+        top: l.top !== undefined ? l.top : undefined,
+        bottom: l.bottom !== undefined ? l.bottom : undefined,
+        left: l.left !== undefined ? l.left : undefined,
+        right: l.right !== undefined ? l.right : undefined,
+        width: l.width,
+        height: l.height,
+        background: l.color,
+        borderRadius: i % 2 === 0 ? '0% 100% 0% 100%' : '100% 0% 100% 0%',
+        opacity: 0.5,
+        zIndex: 0,
+        pointerEvents: 'none',
+        transform: `rotate(${l.rotate + fall * 0.25}deg) translateY(${fall}px)`,
+        transition: 'transform 0.08s linear'
+      };
+    });
+
+    const reveal = (id, extraHidden = 'translateY(28px)') => ({
+      opacity: visible[id] ? 1 : 0,
+      transform: visible[id] ? 'translateY(0)' : extraHidden,
+      transition: 'opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1)'
+    });
+
+    const projects = PROJECTS.map((p, i) => {
+      const isLeft = hover && hover.id === p.id && hover.side === 'left';
+      const isRight = hover && hover.id === p.id && hover.side === 'right';
+      return {
+        ...p,
+        cardStyle: { ...reveal(p.id), transitionDelay: `${i * 0.06}s` },
+        leftScrim: isLeft ? 'linear-gradient(0deg, rgba(20,20,15,0.55), rgba(20,20,15,0) 55%)' : 'rgba(0,0,0,0)',
+        rightScrim: isRight ? 'linear-gradient(0deg, rgba(20,20,15,0.55), rgba(20,20,15,0) 55%)' : 'rgba(0,0,0,0)',
+        leftLabelStyle: { opacity: isLeft ? 1 : 0, transform: isLeft ? 'translateY(0)' : 'translateY(8px)', transition: 'all 0.22s ease' },
+        rightLabelStyle: { opacity: isRight ? 1 : 0, transform: isRight ? 'translateY(0)' : 'translateY(8px)', transition: 'all 0.22s ease' }
+      };
+    });
+
+    const openProject = openId ? PROJECTS.find((p) => p.id === openId) : null;
+
+    return {
+      projects,
+      openProject,
+      revealStyles: {
+        heroBadge: reveal('hero-badge', 'translateY(16px)'),
+        heroTitle: reveal('hero-title'),
+        heroSub: { ...reveal('hero-sub'), transitionDelay: '0.08s' },
+        projectsHeading: reveal('projects-heading')
+      },
+      shapeTransforms: {
+        blob1: `translateY(${scrollY * -0.06}px)`,
+        blob2: `translateY(${scrollY * 0.05}px)`,
+        blob3: `translateY(${scrollY * -0.04}px)`
+      },
+      overlayOpacity: panelIn ? 1 : 0,
+      panelTransform: panelIn ? 'translateX(0)' : 'translateX(100%)',
+      mascotWrapStyle: { transform: `rotate(${mascotTilt}deg)`, transition: 'transform 0.15s ease-out', display: 'inline-block' },
+      leafStyles,
+      onHover: this.onHover,
+      onCardLeave: this.onCardLeave,
+      onVisit: this.onVisit,
+      onOpenDoc: this.onOpenDoc,
+      onCloseDoc: this.onCloseDoc
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,671 @@
+/* boalbasaur — portfolio
+   Implementation of design/Boalbasaur.dc.html */
+
+:root {
+  /* Ink */
+  --ink:          oklch(0.2 0.02 260);
+  --ink-strong:   oklch(0.3 0.02 260);
+  --ink-body:     oklch(0.35 0.02 260);
+  --ink-mid:      oklch(0.4 0.02 260);
+  --ink-soft:     oklch(0.42 0.02 260);
+  --ink-softer:   oklch(0.45 0.02 260);
+  --ink-muted:    oklch(0.5 0.02 260);
+
+  /* Surfaces */
+  --surface:      oklch(0.99 0.005 95);
+  --surface-alt:  oklch(0.94 0.01 95);
+  --border:       oklch(0.9 0.01 95);
+  --border-firm:  oklch(0.85 0.02 95);
+
+  /* Greens */
+  --green:        oklch(0.5 0.13 155);
+  --green-dot:    oklch(0.7 0.14 155);
+  --green-eyebrow:oklch(0.55 0.1 155);
+  --pill-bg:      oklch(0.94 0.03 155);
+  --pill-fg:      oklch(0.35 0.08 155);
+  --note-bg:      oklch(0.95 0.03 155);
+  --note-label:   oklch(0.32 0.09 155);
+  --note-text:    oklch(0.3 0.08 155);
+  --leaf-a:       oklch(0.72 0.13 150);
+  --leaf-b:       oklch(0.6 0.15 145);
+
+  --link:         oklch(0.42 0.1 155);
+  --link-hover:   oklch(0.32 0.1 155);
+
+  --display: 'Space Grotesk', system-ui, sans-serif;
+  --body: 'Inter', system-ui, sans-serif;
+
+  --shell: 1200px;
+  --gutter: 56px;
+
+  /* Driven by main.js */
+  --scroll-y: 0;      /* window.scrollY, unitless */
+  --mascot-tilt: 0;   /* degrees the mascot leans toward the pointer */
+  --mascot-look-x: 0; /* px the face pans inside its frame, horizontally */
+  --mascot-look-y: 0; /* px the face pans inside its frame, vertically */
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* No `scroll-behavior: smooth` on the root: it routes every programmatic scroll
+   through the animator, which fights rapid wheel input. main.js asks for smooth
+   explicitly on the one interaction that wants it. */
+
+body {
+  margin: 0;
+  font-family: var(--body);
+  color: var(--ink);
+  background: linear-gradient(
+    180deg,
+    oklch(0.97 0.015 145) 0%,
+    oklch(0.965 0.02 95) 40%,
+    oklch(0.96 0.03 155) 100%
+  );
+}
+
+body.is-locked { overflow: hidden; }
+
+a { color: var(--link); text-decoration: none; }
+a:hover { color: var(--link-hover); }
+
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.page {
+  position: relative;
+  /* `clip`, not `hidden`. `hidden` still makes this a scroll container — the
+     scrollbar is hidden but the box can be scrolled programmatically, and the
+     decorative layers overflow it by ~300px. Scrolling anything into view
+     scrolls every scrollable ancestor, so an anchor jump left .page itself
+     scrolled down with no way to scroll it back: the header and the top of the
+     headline became permanently unreachable. `clip` clips identically without
+     creating a scroll port. The `hidden` above it is the fallback for Safari
+     below 16, which ignores the `clip` line. */
+  overflow: hidden;
+  overflow: clip;
+  min-height: 100vh;
+}
+
+/* --- Background blobs ---------------------------------------------------
+   The wrapper carries the scroll parallax and the inner <i> carries both the
+   shape and the float animation, so the two transforms compose instead of
+   overwriting each other. */
+.blob {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+}
+.blob > i {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.blob--1 {
+  top: 120px; left: -60px;
+  width: 220px; height: 220px;
+  transform: translateY(calc(var(--scroll-y) * -0.06px));
+}
+.blob--1 > i {
+  border-radius: 50%;
+  background: oklch(0.9 0.06 155);
+  filter: blur(2px);
+  opacity: 0.6;
+  animation: float-slow 7s ease-in-out infinite;
+}
+.blob--2 {
+  top: 900px; right: -80px;
+  width: 280px; height: 280px;
+  transform: translateY(calc(var(--scroll-y) * 0.05px));
+}
+.blob--2 > i {
+  border-radius: 50%;
+  background: oklch(0.93 0.05 25);
+  opacity: 0.5;
+  animation: float-slow 9s ease-in-out infinite reverse;
+}
+.blob--3 {
+  top: 1700px; left: 30%;
+  width: 160px; height: 160px;
+  transform: translateY(calc(var(--scroll-y) * -0.04px));
+}
+.blob--3 > i {
+  border-radius: 40% 60% 55% 45%;
+  background: oklch(0.88 0.07 155);
+  opacity: 0.5;
+}
+
+/* --- Falling leaves -----------------------------------------------------
+   A page-wide layer so the leaves can settle at the foot of the document.
+   Some start there; the rest get their transform from main.js as you scroll. */
+.leaves {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+/* A soft band of ground at the foot of the page. Without a surface to lie on,
+   leaves parked at the bottom just read as floating low in the background. */
+.ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 104px;
+  background: linear-gradient(
+    180deg,
+    oklch(0.93 0.05 150 / 0) 0%,
+    oklch(0.91 0.055 150 / 0.5) 42%,
+    oklch(0.89 0.06 148 / 0.85) 100%
+  );
+}
+
+.leaf {
+  position: absolute;
+  opacity: 0.5;
+  background: var(--leaf-a);
+  border-radius: 0% 100% 0% 100%;
+  transform: rotate(calc(var(--rot) * 1deg));
+}
+/* Landed leaves sit a little heavier than the ones still in the air. */
+.leaf--ground { opacity: 0.62; }
+.leaf:nth-of-type(even) {
+  background: var(--leaf-b);
+  border-radius: 100% 0% 100% 0%;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-18px); }
+}
+
+@keyframes gentle-bounce {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-10px) rotate(2deg); }
+}
+
+/* --- Scroll reveal ------------------------------------------------------ */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0s);
+}
+[data-reveal][data-reveal-near] { transform: translateY(16px); }
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* --- Header ------------------------------------------------------------- */
+.site-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 32px var(--gutter);
+  max-width: var(--shell);
+  margin: 0 auto;
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand__logo {
+  display: block;
+  height: 40px;
+  width: auto;   /* the mark isn't square — let it keep its ratio */
+  flex: none;
+}
+.brand__name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.ghost-button {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  border: 1.5px solid var(--border-firm);
+  padding: 9px 18px;
+  border-radius: 100px;
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.ghost-button:hover {
+  color: var(--ink);
+  border-color: var(--green);
+}
+
+/* --- Hero --------------------------------------------------------------- */
+.hero {
+  position: relative;
+  z-index: 1;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 64px var(--gutter) 120px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-mid);
+  margin: 0 0 28px;
+}
+.badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green-dot);
+}
+
+.hero__title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(40px, 6vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  margin: 0 0 24px;
+  max-width: 780px;
+}
+.hero__title-accent { color: var(--green); }
+
+.hero__sub {
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 560px;
+  margin: 0 0 8px;
+}
+.hero__sub + .hero__sub { margin-top: 18px; }
+/* Steps back from the line above it — an aside, not part of the introduction. */
+.hero__sub--soft {
+  font-size: 16.5px;
+  color: var(--ink-muted);
+}
+
+.mascot {
+  position: relative;
+  display: inline-block;
+  margin-top: 72px;
+}
+.mascot__note {
+  position: absolute;
+  top: -46px;
+  left: 8px;
+  background: var(--ink);
+  color: oklch(0.98 0.005 95);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 14px;
+  border-radius: 14px 14px 14px 4px;
+  white-space: nowrap;
+}
+/* Three stacked transforms, one per layer, so they never overwrite each other:
+   .mascot__tilt leans the head toward the pointer, .mascot__frame carries the
+   idle bounce, and the image pans inside the frame to sell the "looking". */
+.mascot__tilt {
+  display: inline-block;
+  transform: rotate(calc(var(--mascot-tilt) * 1deg));
+  transition: transform 0.18s ease-out;
+}
+.mascot__frame {
+  display: block;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  /* Same reason as .page — the image overflows this box, so `hidden` would
+     leave it scrollable. */
+  overflow: hidden;
+  overflow: clip;
+  /* Only shows before the image loads — mascot-hero.png over-covers the disc.
+     This is the colour-managed value the browser paints for the artwork's mint,
+     not the raw bytes in the PNG (its ICC profile maps 158,204,182 to this). */
+  background: #91ceb5;
+  animation: gentle-bounce 3.4s ease-in-out infinite;
+}
+.mascot__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  /* mascot-hero.png is a square canvas with the face centred inside a mint
+     margin, so the face reads smaller than the disc while the image still
+     over-covers it: the scale leaves 8.6px of overflow per side against the
+     6px max pan, and the image's own edges never enter the frame. */
+  transform:
+    translate(calc(var(--mascot-look-x) * 1px), calc(var(--mascot-look-y) * 1px))
+    scale(1.18);
+  transition: transform 0.18s ease-out;
+}
+
+/* --- Projects ----------------------------------------------------------- */
+.projects {
+  position: relative;
+  z-index: 1;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 140px;
+  scroll-margin-top: 40px;  /* lands with a little air above the heading */
+}
+
+.projects__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.projects__title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 32px;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.projects__hint {
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.projects__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(20, 20, 15, 0.04);
+  --reveal-delay: calc(var(--card-index) * 0.06s);
+}
+
+.card__shot {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  /* Holds two focusable halves; focusing one scrolls its ancestors, so keep
+     this out of scroll-container territory too. */
+  overflow: hidden;
+  overflow: clip;
+  flex: none;
+}
+
+.shot {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.shot--empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: oklch(0.96 0.006 95);
+  border-bottom: 1px dashed var(--border-firm);
+  color: var(--ink-muted);
+  font-size: 14px;
+}
+.shot--empty svg { width: 26px; height: 26px; }
+
+/* Two invisible halves over the screenshot: left visits, right opens the doc. */
+.card__half {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  display: flex;
+  align-items: flex-end;
+  padding: 26px;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.25s ease;
+
+  /* button reset */
+  border: 0;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.card__half--left  { left: 0; }
+.card__half--right { right: 0; justify-content: flex-end; }
+
+.card__half:hover,
+.card__half:focus-visible {
+  background: linear-gradient(0deg, rgba(20, 20, 15, 0.55), rgba(20, 20, 15, 0) 55%);
+}
+.card__half:focus-visible { outline-offset: -3px; }
+
+.card__action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 20px;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+.card__half:hover .card__action,
+.card__half:focus-visible .card__action {
+  opacity: 1;
+  transform: translateY(0);
+}
+.card__arrow { font-size: 22px; }
+.card__glyph { font-size: 18px; }
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  padding: 20px 22px 22px;
+}
+.card__title {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 19px;
+  margin: 0;
+}
+.card__tagline {
+  font-size: 14px;
+  color: var(--ink-softer);
+  margin: 0;
+}
+
+.tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.tech li {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 100px;
+  background: var(--pill-bg);
+  color: var(--pill-fg);
+}
+
+/* --- Footer ------------------------------------------------------------- */
+.site-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 64px;
+  color: var(--ink-muted);
+  font-size: 13px;
+}
+
+/* --- Doc panel ---------------------------------------------------------- */
+.doc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(20, 20, 15, 0.35);
+  opacity: 0;
+  transition: opacity 0.28s ease;
+}
+.doc-overlay.is-open { opacity: 1; }
+
+.doc-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 21;
+  height: 100%;
+  width: min(520px, 92vw);
+  background: var(--surface);
+  box-shadow: -24px 0 60px rgba(20, 20, 15, 0.12);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transform: translateX(100%);
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.doc-panel.is-open { transform: translateX(0); }
+
+.doc-panel__inner { padding: 36px; }
+
+.doc-panel__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.doc-panel__eyebrow {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green-eyebrow);
+  margin: 0 0 8px;
+}
+.doc-panel__title {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.doc-panel__close {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: var(--surface-alt);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--ink);
+  transition: background 0.2s ease;
+}
+.doc-panel__close:hover { background: var(--border); }
+
+.doc-panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.doc-panel__body h4 {
+  font-family: var(--body);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-strong);
+  margin: 0 0 6px;
+}
+.doc-panel__body p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-body);
+  margin: 0;
+}
+
+.doc-note {
+  background: var(--note-bg);
+  border-radius: 14px;
+  padding: 18px 20px;
+}
+.doc-note h4 { color: var(--note-label); }
+.doc-note p  { color: var(--note-text); }
+
+/* --- Responsive --------------------------------------------------------- */
+@media (max-width: 1000px) {
+  .projects__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 760px) {
+  :root { --gutter: 24px; }
+
+  .site-header { padding: 24px var(--gutter); }
+  .hero { padding: 40px var(--gutter) 96px; }
+  .projects { padding: 0 var(--gutter) 100px; }
+  .site-footer { padding: 0 var(--gutter) 48px; }
+
+  .projects__grid { grid-template-columns: 1fr; }
+  .card__shot { height: 220px; }
+  .hero__sub { font-size: 17px; }
+  .doc-panel__inner { padding: 28px 24px; }
+}
+
+/* Touch devices have no hover, so surface both actions permanently. */
+@media (hover: none) {
+  .card__half {
+    background: linear-gradient(0deg, rgba(20, 20, 15, 0.5), rgba(20, 20, 15, 0) 55%);
+  }
+  .card__action {
+    opacity: 1;
+    transform: none;
+  }
+  .card__half--left .card__action  { font-size: 17px; }
+  .card__half--right .card__action { font-size: 17px; }
+  .projects__hint { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Leaves keep their resting rotation — main.js never moves them here. */
+  .blob, .blob > i, .mascot__frame { animation: none; }
+  .blob, .mascot__tilt, .mascot__img { transform: none; transition: none; }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .doc-overlay, .doc-panel { transition: none; }
+}
