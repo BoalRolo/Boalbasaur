@@ -138,7 +138,7 @@ source art changes; both are idempotent.
   references it since the header moved to the logo; it is kept as the cleaned
   base art.
 
-`design/build-logo.py`, from `design/uploads/logo-source.png`:
+`design/build-logo.py`, from `design/uploads/logo2.png`:
 
 - `assets/logo.png` — the header mark, keyed off its white background.
 - `assets/favicon.png` — the same mark padded into a 128×128 square for the tab.
@@ -147,3 +147,9 @@ The artwork is flat green on opaque white. The script solves the blend it was
 drawn with (`alpha = (255 - pixel) / (255 - green)`) rather than keying the white
 out on a threshold, which would leave a pale halo on every anti-aliased edge. The
 gaps between the petals come out transparent, so the page shows through them.
+
+Two wrinkles specific to this source. Its white is 253–254 rather than 255, so
+the margin solves to alpha 2–4 instead of 0 — invisible, but enough to defeat the
+trim, hence the 3% noise floor. And its own green (`#82AB3C`) is only 2.47:1 on
+the page background, light for a brand mark, so `FILL` repaints it in the deeper
+green the mark has always used; set `FILL = None` to keep the source's own.

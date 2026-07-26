@@ -22,7 +22,13 @@ from collections import Counter
 from PIL import Image
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SOURCE = ROOT / "design/uploads/logo-source.png"
+SOURCE = ROOT / "design/uploads/logo2.png"
+
+# The artwork's own green is #82AB3C, which is only 2.47:1 against the page
+# background — light for a brand mark. Refilled with the deeper green the mark
+# has always been drawn in, which lands at 5.43:1.
+# Set to None to keep whatever green the source was drawn in.
+FILL = (0x3F, 0x6F, 0x44)
 
 FAVICON_SIZE = 128
 FAVICON_PADDING = 6  # px of clear space per side, so it doesn't touch the edge
@@ -45,6 +51,9 @@ def keyed_out(image):
     )
     green = counts.most_common(1)[0][0]
     spans = [255 - c for c in green]
+    # The alpha solve needs the green the artwork was actually drawn in; the
+    # colour it gets painted back in is a separate decision.
+    fill = FILL or green
 
     out = Image.new("RGBA", (width, height))
     target = out.load()
@@ -57,7 +66,13 @@ def keyed_out(image):
                 (255 - c) / span for c, span in zip((r, g, b), spans) if span
             ) / sum(1 for span in spans if span)
             alpha = max(0.0, min(1.0, alpha)) * (a / 255)
-            target[x, y] = green + (round(alpha * 255),)
+            # logo2's "white" is 253-254, not 255, so the margin solves to
+            # alpha 2-4 rather than 0 — invisible, but enough to defeat the
+            # getbbox() trim below and to tint a dark backdrop. Anything under
+            # 3% is that noise floor, never a real anti-aliased edge.
+            if alpha < 0.03:
+                alpha = 0.0
+            target[x, y] = fill + (round(alpha * 255),)
     return out
 
 
