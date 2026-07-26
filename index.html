@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>boalbasaur — things I've grown</title>
+<meta name="description" content="I'm boalbasaur. I build things for fun, for learning, for actual clients, and sometimes just for the pure nonsense of it.">
+<meta name="theme-color" content="#e6f2e4">
+<link rel="canonical" href="https://boalbasaur.com/">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+
+<!-- Link previews. og:url and og:image have to be absolute — a relative path
+     here renders as a bare URL with no card in WhatsApp, Slack, iMessage etc. -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://boalbasaur.com/">
+<meta property="og:site_name" content="boalbasaur">
+<meta property="og:title" content="boalbasaur — things I've grown">
+<meta property="og:description" content="I'm boalbasaur. I build things for fun, for learning, for actual clients, and sometimes just for the pure nonsense of it.">
+<meta property="og:image" content="https://boalbasaur.com/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The boalbasaur logo above the words: Things I've grown, laid out properly.">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="page" id="page">
+
+  <div class="blob blob--1" aria-hidden="true"><i></i></div>
+  <div class="blob blob--2" aria-hidden="true"><i></i></div>
+  <div class="blob blob--3" aria-hidden="true"><i></i></div>
+
+  <div class="leaves" aria-hidden="true">
+    <!-- The surface everything below settles onto. -->
+    <span class="ground"></span>
+
+    <!-- Already on the ground. They lie flat in a tight band on the surface,
+         overlapping into a litter line, and several run past the bottom edge
+         (.page clips them) so the layer reads as continuing out of frame. -->
+    <i class="leaf leaf--ground" style="--rot:88;  bottom:-26px; left:14%;  width:58px; height:96px"></i>
+    <i class="leaf leaf--ground" style="--rot:-79; bottom:-6px;  left:21%;  width:50px; height:84px"></i>
+    <i class="leaf leaf--ground" style="--rot:-84; bottom:4px;   left:29%;  width:46px; height:78px"></i>
+    <i class="leaf leaf--ground" style="--rot:93;  bottom:-20px; left:35%;  width:56px; height:92px"></i>
+    <i class="leaf leaf--ground" style="--rot:96;  bottom:-14px; left:51%;  width:52px; height:86px"></i>
+    <i class="leaf leaf--ground" style="--rot:-86; bottom:-2px;  left:72%;  width:48px; height:80px"></i>
+    <i class="leaf leaf--ground" style="--rot:-92; bottom:12px;  right:23%; width:44px; height:74px"></i>
+    <i class="leaf leaf--ground" style="--rot:80;  bottom:-30px; right:11%; width:54px; height:88px"></i>
+
+    <!-- Drift down to join them as you scroll. data-start is the point in the
+         page's scroll range where each one lets go, data-land how far above the
+         bottom edge it comes to rest (negative = past it), data-rest the angle
+         it settles at and data-turns how many extra tumbles it takes to get
+         there. -->
+    <i class="leaf" data-fall data-start="0"    data-land="16"  data-rest="86"  data-turns="1"  data-drift="28"
+       style="--rot:-18; top:9%;  left:5%;   width:70px; height:110px"></i>
+    <i class="leaf" data-fall data-start="0.05" data-land="-8"  data-rest="-94" data-turns="-1" data-drift="22"
+       style="--rot:24;  top:15%; right:8%;  width:54px; height:90px"></i>
+    <i class="leaf" data-fall data-start="0.12" data-land="28"  data-rest="82"  data-turns="1"  data-drift="30"
+       style="--rot:-30; top:24%; left:3%;   width:60px; height:100px"></i>
+    <i class="leaf" data-fall data-start="0.20" data-land="-20" data-rest="-88" data-turns="0"  data-drift="18"
+       style="--rot:30;  top:32%; left:63%;  width:56px; height:92px"></i>
+    <i class="leaf" data-fall data-start="0.30" data-land="6"   data-rest="92"  data-turns="-1" data-drift="26"
+       style="--rot:-12; top:45%; left:40%;  width:64px; height:104px"></i>
+    <i class="leaf" data-fall data-start="0.42" data-land="-16" data-rest="-80" data-turns="1"  data-drift="20"
+       style="--rot:-20; top:54%; right:33%; width:52px; height:86px"></i>
+  </div>
+
+  <header class="site-header">
+    <div class="brand">
+      <img class="brand__logo" src="assets/logo.png" alt="" width="612" height="562">
+      <span class="brand__name">boalbasaur</span>
+    </div>
+    <a class="ghost-button" href="#projects">See projects &darr;</a>
+  </header>
+
+  <section class="hero">
+    <p class="badge" data-reveal data-reveal-near>
+      <span class="badge__dot" aria-hidden="true"></span>
+      Open for new projects
+    </p>
+
+    <h1 class="hero__title" data-reveal>
+      Things I&rsquo;ve grown,<br><span class="hero__title-accent">laid out properly.</span>
+    </h1>
+
+    <p class="hero__sub" data-reveal data-reveal-delay="0.08s">
+      I&rsquo;m boalbasaur. I build things for fun, for learning, for actual clients,
+      and sometimes just for the pure nonsense of it.
+    </p>
+
+    <p class="hero__sub hero__sub--soft" data-reveal data-reveal-delay="0.14s">
+      Have a look around! Feel free to reach out if you&rsquo;d like to plant some new
+      ideas, grow a project together, or just say hi.
+    </p>
+
+    <div class="mascot">
+      <span class="mascot__note">evolving slowly...</span>
+      <span class="mascot__tilt">
+        <span class="mascot__frame">
+          <img class="mascot__img" src="assets/mascot-hero.png" alt="The boalbasaur mascot" width="96" height="96">
+        </span>
+      </span>
+    </div>
+  </section>
+
+  <section class="projects" id="projects">
+    <div class="projects__head" data-reveal>
+      <h2 class="projects__title">Projects</h2>
+      <span class="projects__hint">hover left = visit &middot; hover right = doc</span>
+    </div>
+
+    <div class="projects__grid">
+
+      <article class="card" data-reveal style="--card-index:0">
+        <div class="card__shot">
+          <div class="shot shot--empty">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="8.5" cy="9.5" r="1.5" fill="currentColor"/>
+              <path d="M3.5 17.5 9 12l4 4 3-2.5 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Website screenshot</span>
+          </div>
+          <a class="card__half card__half--left" href="https://example.com" target="_blank"
+             rel="noopener noreferrer" aria-label="Visit the Pixel Pantry website">
+            <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
+          </a>
+          <button class="card__half card__half--right" type="button"
+                  data-doc-for="pixel-pantry" aria-label="Read the Pixel Pantry project doc">
+            <span class="card__action"><span class="card__glyph" aria-hidden="true">&#9776;</span> Doc</span>
+          </button>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">Pixel Pantry</h3>
+          <p class="card__tagline">A recipe app that turns whatever is in your fridge into a plan.</p>
+          <ul class="tech">
+            <li>React</li><li>Node</li><li>Postgres</li>
+          </ul>
+        </div>
+        <div class="doc-source" id="pixel-pantry" hidden>
+          <section>
+            <h4>What it is</h4>
+            <p>A web app where you type in the ingredients you have and get back recipes ranked by how few extra items you would need to buy.</p>
+          </section>
+          <section>
+            <h4>Motivation</h4>
+            <p>I kept opening the fridge with no idea what to cook, and every recipe app assumed I already had a full pantry.</p>
+          </section>
+          <section>
+            <h4>Purpose</h4>
+            <p>To practice building a full product end to end: a real backend, a matching algorithm, and a UI people would actually enjoy using.</p>
+          </section>
+          <section>
+            <h4>Challenges</h4>
+            <p>Matching loose ingredient names (e.g. &ldquo;tomato&rdquo; vs &ldquo;cherry tomatoes&rdquo;) was harder than expected and needed a small normalization layer.</p>
+          </section>
+          <section class="doc-note">
+            <h4>What I learned</h4>
+            <p>Got comfortable designing a schema for messy, user-generated ingredient data, and learned how much UX work goes into &ldquo;good enough&rdquo; search.</p>
+          </section>
+        </div>
+      </article>
+
+      <article class="card" data-reveal style="--card-index:1">
+        <div class="card__shot">
+          <div class="shot shot--empty">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="8.5" cy="9.5" r="1.5" fill="currentColor"/>
+              <path d="M3.5 17.5 9 12l4 4 3-2.5 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Website screenshot</span>
+          </div>
+          <a class="card__half card__half--left" href="https://example.com" target="_blank"
+             rel="noopener noreferrer" aria-label="Visit the Routewise website">
+            <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
+          </a>
+          <button class="card__half card__half--right" type="button"
+                  data-doc-for="routewise" aria-label="Read the Routewise project doc">
+            <span class="card__action"><span class="card__glyph" aria-hidden="true">&#9776;</span> Doc</span>
+          </button>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">Routewise</h3>
+          <p class="card__tagline">A trip planner that optimizes multi-stop road trips for scenery, not just speed.</p>
+          <ul class="tech">
+            <li>Vue</li><li>Mapbox</li><li>Python</li>
+          </ul>
+        </div>
+        <div class="doc-source" id="routewise" hidden>
+          <section>
+            <h4>What it is</h4>
+            <p>A route planner where you drop pins for places you want to see, and it reorders and suggests the drive that balances time against detour-worthy stops.</p>
+          </section>
+          <section>
+            <h4>Motivation</h4>
+            <p>Planning a road trip with friends always turned into a spreadsheet fight over the &ldquo;best&rdquo; order to visit places.</p>
+          </section>
+          <section>
+            <h4>Purpose</h4>
+            <p>To explore routing algorithms and mapping APIs, and to ship something my friends would actually use on our next trip.</p>
+          </section>
+          <section>
+            <h4>Challenges</h4>
+            <p>Balancing &ldquo;shortest route&rdquo; against &ldquo;most interesting route&rdquo; needed a scoring system that took a few iterations to feel right.</p>
+          </section>
+          <section class="doc-note">
+            <h4>What I learned</h4>
+            <p>Learned how to work with real-world map data and constraint-based optimization, and how to communicate trade-offs simply in the UI.</p>
+          </section>
+        </div>
+      </article>
+
+      <article class="card" data-reveal style="--card-index:2">
+        <div class="card__shot">
+          <div class="shot shot--empty">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/>
+              <circle cx="8.5" cy="9.5" r="1.5" fill="currentColor"/>
+              <path d="M3.5 17.5 9 12l4 4 3-2.5 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Website screenshot</span>
+          </div>
+          <a class="card__half card__half--left" href="https://example.com" target="_blank"
+             rel="noopener noreferrer" aria-label="Visit the Loopline website">
+            <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
+          </a>
+          <button class="card__half card__half--right" type="button"
+                  data-doc-for="loopline" aria-label="Read the Loopline project doc">
+            <span class="card__action"><span class="card__glyph" aria-hidden="true">&#9776;</span> Doc</span>
+          </button>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">Loopline</h3>
+          <p class="card__tagline">A tiny browser tool for sketching short audio loops without opening a DAW.</p>
+          <ul class="tech">
+            <li>TypeScript</li><li>Web Audio API</li>
+          </ul>
+        </div>
+        <div class="doc-source" id="loopline" hidden>
+          <section>
+            <h4>What it is</h4>
+            <p>A minimal step-sequencer that runs entirely in the browser, for quickly sketching a beat idea without launching a full production app.</p>
+          </section>
+          <section>
+            <h4>Motivation</h4>
+            <p>I wanted to capture musical ideas the moment they happened, but opening a heavy DAW always killed the momentum.</p>
+          </section>
+          <section>
+            <h4>Purpose</h4>
+            <p>To get properly comfortable with the Web Audio API and timing-accurate scheduling in JavaScript.</p>
+          </section>
+          <section>
+            <h4>Challenges</h4>
+            <p>Keeping playback perfectly on-beat across tabs and devices took a scheduling rewrite using a look-ahead timer pattern.</p>
+          </section>
+          <section class="doc-note">
+            <h4>What I learned</h4>
+            <p>Learned how audio scheduling actually works under the hood, and why naive setTimeout-based sequencers drift out of sync.</p>
+          </section>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <span>&copy; 2026 boalbasaur</span>
+    <span>built one project at a time</span>
+  </footer>
+
+</div>
+
+<div class="doc-overlay" id="doc-overlay" hidden></div>
+
+<aside class="doc-panel" id="doc-panel" role="dialog" aria-modal="true"
+       aria-labelledby="doc-panel-title" hidden>
+  <div class="doc-panel__inner">
+    <div class="doc-panel__head">
+      <div>
+        <p class="doc-panel__eyebrow">Project doc</p>
+        <h2 class="doc-panel__title" id="doc-panel-title"></h2>
+      </div>
+      <button class="doc-panel__close" type="button" id="doc-close" aria-label="Close project doc">&times;</button>
+    </div>
+    <div class="doc-panel__body" id="doc-panel-body"></div>
+  </div>
+</aside>
+
+<script src="main.js"></script>
+</body>
+</html>
