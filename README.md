@@ -10,6 +10,14 @@ assets/       images used by the site
 design/       the Claude Design source this was built from (reference only)
 ```
 
+## Cache busting
+
+`index.html` links `styles.css?v=10` and `main.js?v=10`. **Bump both numbers when
+you change either file.** With no build step there is nothing fingerprinting
+these, and a browser holding an old `styles.css` will pair it with freshly
+changed markup — the page comes out as unstyled content in the right shape,
+which reads as broken CSS rather than a stale cache.
+
 ## Running it
 
 Open `index.html` directly, or serve the folder:
@@ -24,24 +32,88 @@ Deploys as-is to GitHub Pages, Netlify, Vercel, or any static host.
 
 Each project is one `<article class="card">` in `index.html`. A card holds:
 
-- the visible bits — title, tagline, tech pills
+- the visible bits — screenshot, title, tagline, tech pills
 - `href` on `.card__half--left` — where "Check website" goes
-- a `.doc-source` block — the five sections shown in the slide-out doc panel
+- `.card__url` — the same address again, written out at the foot of the card
+  (touch devices have no hover, so the screenshot halves reveal nothing there)
+- a `.doc-source` block — the content of the slide-out doc panel
 
 To add a project, copy a whole `<article>`, bump `--card-index` (it staggers the
 reveal), and give the new `.doc-source` a unique `id` matching the `data-doc-for`
 on its Doc button.
 
-### Adding a screenshot
+The grid sizes itself with `repeat(auto-fill, minmax(300px, 1fr))`, so a card is
+the same width whether there is one project or six — new ones fill the row
+instead of resizing the ones already there.
 
-Cards ship with a placeholder. Replace the `<div class="shot shot--empty">…</div>`
-with:
+### Per-project doc themes
+
+Every project gets its own doc design. A `.doc-source` names its skin:
 
 ```html
-<img class="shot" src="assets/pixel-pantry.png" alt="Screenshot of Pixel Pantry" loading="lazy">
+<div class="doc-source" id="my-project" data-doc-theme="my-project" hidden>
 ```
 
-The `.shot` class already handles `object-fit: cover` inside the 260px frame.
+`main.js` copies that value onto the panel as `data-doc-theme` while the doc is
+open (and drops it after the slide-out, so the panel never reverts to the plain
+look mid-animation). The styling is one block in `styles.css` scoped to the
+attribute:
+
+```css
+.doc-panel[data-doc-theme="my-project"] { … }
+.doc-panel[data-doc-theme="my-project"] .doc-panel__body h4 { … }
+```
+
+Nothing is themed by default. A `.doc-source` with no `data-doc-theme` gets the
+plain panel, which is the base styling under `--- Doc panel ---`.
+
+There are a few shared primitives a doc can reach for, plain until a theme
+restyles them: `.doc-lede` (the opening line), `.doc-list` (a bullet list),
+`.doc-note` (the closing block), `.doc-gallery` / `.doc-shot` (screenshots with
+captions, plus `.doc-shot--phone` which sets a portrait shot beside its caption),
+and `.tech` (the pills, same as on the cards).
+A theme is free to ignore them and style its own markup instead — the panel just
+renders whatever HTML the `.doc-source` holds.
+
+**The `boalbasaur` theme** is the reference one, and the point of it is that the
+doc looks like the site it documents: the page's background wash, `Press Start
+2P` headings with the console's selection caret, leaves for list bullets, the
+mascot's console (`6px double`, bone, monospace) as the "What I learned" block,
+and both leaf layers built from the *same* `.leaf` markup as the page, so they
+inherit its shapes, tones and alternation with no rules of their own: `.doc-leaves`
+scattered behind the text at low opacity, and `.doc-litter` piled at the foot.
+
+### Adding a screenshot
+
+```html
+<img class="shot" src="assets/my-project.png" alt="Screenshot of My Project" loading="lazy">
+```
+
+`.shot` handles `object-fit: cover` inside the 260px frame. Cards without one can
+use the `<div class="shot shot--empty">` placeholder instead.
+
+Screenshots *inside* a doc go in a `.doc-gallery` and are WebP — the Junkybox
+shots came out 4-9x smaller than the same images as PNG (63KB for all three
+against 462KB), which is worth having on a site that sells itself on being fast.
+Always set `width` and `height` on them: the aspect ratio comes off those
+attributes, so a shot holds its space from first paint instead of reflowing the
+panel under whoever is reading it. `loading="lazy"` keeps them off the wire until
+someone actually opens that doc.
+
+`assets/boalbasaur-platform.png` is this site's own hero, cropped to the card
+frame's ratio so `cover` has nothing to throw away. To regenerate it after a
+design change, serve the folder and:
+
+```sh
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless \
+  --disable-gpu --hide-scrollbars --window-size=1200,1000 \
+  --virtual-time-budget=5000 --screenshot=shot-raw.png http://127.0.0.1:8000/
+
+python3 -c "
+from PIL import Image
+Image.open('shot-raw.png').convert('RGB').crop((0, 0, 1200, 945)) \
+     .resize((900, 709), Image.LANCZOS).save('assets/boalbasaur-platform.png', optimize=True)"
+```
 
 ## How the interactions work
 
@@ -112,8 +184,9 @@ scrolls and content that overflows it.** A quick check in the console —
   340px from the mascot's centre and settle back to neutral when the pointer
   leaves the window. The 6px cap is what keeps the face off the edge of the disc
   — push it further and the mouth starts clipping at full diagonal pan.
-- **Doc panel.** Content is read from the card's hidden `.doc-source`. Traps focus,
-  closes on Escape / overlay click, restores focus to the button that opened it.
+- **Doc panel.** Content is read from the card's hidden `.doc-source`, and its
+  design from that block's `data-doc-theme` (see above). Traps focus, closes on
+  Escape / overlay click, restores focus to the button that opened it.
 
 Everything animated is disabled under `prefers-reduced-motion: reduce`.
 

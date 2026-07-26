@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>boalbasaur — things I've grown</title>
-<meta name="description" content="I'm boalbasaur. I build things for fun, for learning, for actual clients, and sometimes just for the pure nonsense of it.">
+<title>boalbasaur · things I've grown</title>
+<meta name="description" content="I'm boalbasaur. I build things for fun, for knowledge, for clients. And mainly for the pure nonsense of it.">
 <meta name="theme-color" content="#e6f2e4">
 <link rel="canonical" href="https://boalbasaur.com/">
 <link rel="icon" href="assets/favicon.png" type="image/png">
@@ -14,8 +14,8 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://boalbasaur.com/">
 <meta property="og:site_name" content="boalbasaur">
-<meta property="og:title" content="boalbasaur — things I've grown">
-<meta property="og:description" content="I'm boalbasaur. I build things for fun, for learning, for actual clients, and sometimes just for the pure nonsense of it.">
+<meta property="og:title" content="boalbasaur · things I've grown">
+<meta property="og:description" content="I'm boalbasaur. I build things for fun, for knowledge, for clients. And mainly for the pure nonsense of it.">
 <meta property="og:image" content="https://boalbasaur.com/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -24,7 +24,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<!-- ?v= is the cache buster. There is no build step to fingerprint these, and
+     without it a browser holding an old styles.css will happily pair it with
+     freshly-changed markup: the page renders as unstyled content in the right
+     shape, which looks like the CSS is broken rather than stale. Bump the
+     number whenever styles.css or main.js changes. -->
+<link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
 
@@ -142,8 +147,11 @@
     </h1>
 
     <p class="hero__sub" data-reveal data-reveal-delay="0.08s">
-      I&rsquo;m boalbasaur. I build things for fun, for learning, for actual clients,
-      and sometimes just for the pure nonsense of it.
+      <!-- The nbsp keeps "for clients" whole. Without it the line wraps after
+           "for", stranding the preposition and breaking the for-X-for-Y-for-Z
+           parallel across two lines; bound, both lines break on a comma. -->
+      I&rsquo;m boalbasaur. I build things for fun, for knowledge, for&nbsp;clients.
+      And mainly for the pure nonsense of it.
     </p>
 
     <p class="hero__sub hero__sub--soft" data-reveal data-reveal-delay="0.14s">
@@ -296,151 +304,284 @@
 
       <article class="card" data-reveal style="--card-index:0">
         <div class="card__shot">
-          <div class="shot shot--empty">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/>
-              <circle cx="8.5" cy="9.5" r="1.5" fill="currentColor"/>
-              <path d="M3.5 17.5 9 12l4 4 3-2.5 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>Website screenshot</span>
-          </div>
-          <a class="card__half card__half--left" href="https://example.com" target="_blank"
-             rel="noopener noreferrer" aria-label="Visit the Pixel Pantry website">
+          <!-- Cropped to the card frame's own ratio, so `cover` has nothing to
+               throw away. See the README for the command that regenerates it. -->
+          <img class="shot" src="assets/boalbasaur-platform.png" width="900" height="709"
+               alt="The boalbasaur homepage: the headline Things I've grown, laid out properly, with leaves drifting past."
+               loading="lazy">
+          <a class="card__half card__half--left" href="https://boalbasaur.com/" data-already-here
+             rel="noopener" aria-label="Visit the Boalbasaur Platform website">
             <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
           </a>
           <button class="card__half card__half--right" type="button"
-                  data-doc-for="pixel-pantry" aria-label="Read the Pixel Pantry project doc">
+                  data-doc-for="boalbasaur-platform" aria-label="Read the Boalbasaur Platform project doc">
             <span class="card__action"><span class="card__glyph" aria-hidden="true">&#9776;</span> Doc</span>
           </button>
         </div>
         <div class="card__body">
-          <h3 class="card__title">Pixel Pantry</h3>
-          <p class="card__tagline">A recipe app that turns whatever is in your fridge into a plan.</p>
+          <h3 class="card__title">Boalbasaur Platform</h3>
+          <p class="card__tagline">This site. A pun on one of my family names, grown into a home for everything I build.</p>
           <ul class="tech">
-            <li>React</li><li>Node</li><li>Postgres</li>
+            <li>HTML</li><li>CSS</li><li>Vanilla JS</li>
           </ul>
+          <!-- The address in the open, not just under the screenshot's left
+               half: on touch there is no hover, and a card that names where it
+               goes is worth more than one that makes you tap to find out. -->
+          <!-- Same treatment as the shot's left half above: this address is the
+               page you are standing on, so it gets the same answer. -->
+          <a class="card__url" href="https://boalbasaur.com/" data-already-here rel="noopener">
+            boalbasaur.com<span class="card__url-arrow" aria-hidden="true">&#8599;</span>
+          </a>
         </div>
-        <div class="doc-source" id="pixel-pantry" hidden>
+
+        <!-- data-doc-theme picks the panel's skin. This one dresses the doc in
+             the site's own design language — Press Start 2P headings, leaf
+             bullets, the mascot console as the closing block, and a litter line
+             at its foot built from the same .leaf markup as the page. -->
+        <div class="doc-source" id="boalbasaur-platform" data-doc-theme="boalbasaur" hidden>
+
+          <!-- Decoration behind the whole doc, the page's background layer
+               brought indoors. Most hug the gutters and are cut off by the
+               panel edge, so they read as continuing past it rather than
+               floating in the margin; the few marked leaf--spot sit further in
+               and are fainter still, since they land under running text.
+               Positions are percentages of the doc's own height, so they stay
+               spread out however long a doc runs. -->
+          <div class="doc-leaves" aria-hidden="true">
+            <i class="leaf" style="--rot:30;  top:0.5%; right:-20px; width:46px; height:78px"></i>
+            <i class="leaf" style="--rot:-34; top:6%;   left:-24px;  width:42px; height:70px"></i>
+            <i class="leaf" style="--rot:16;  top:14%;  right:-14px; width:34px; height:58px"></i>
+            <i class="leaf leaf--spot" style="--rot:-12; top:19%; right:12%; width:28px; height:48px"></i>
+            <i class="leaf" style="--rot:44;  top:22%;  left:-16px;  width:50px; height:84px"></i>
+            <i class="leaf" style="--rot:-24; top:31%;  right:-26px; width:44px; height:74px"></i>
+            <i class="leaf" style="--rot:20;  top:40%;  left:-22px;  width:36px; height:60px"></i>
+            <i class="leaf" style="--rot:38;  top:48%;  right:-18px; width:48px; height:80px"></i>
+            <i class="leaf leaf--spot" style="--rot:34; top:53%; left:14%; width:26px; height:44px"></i>
+            <i class="leaf" style="--rot:-30; top:57%;  left:-18px;  width:40px; height:66px"></i>
+            <i class="leaf" style="--rot:22;  top:66%;  right:-22px; width:34px; height:58px"></i>
+            <i class="leaf" style="--rot:-40; top:75%;  left:-26px;  width:46px; height:78px"></i>
+            <i class="leaf leaf--spot" style="--rot:-22; top:79%; right:16%; width:30px; height:50px"></i>
+            <i class="leaf" style="--rot:26;  top:84%;  right:-16px; width:42px; height:70px"></i>
+            <i class="leaf" style="--rot:-18; top:92%;  left:-20px;  width:38px; height:64px"></i>
+          </div>
+
+          <p class="doc-lede">A lighthearted personal portfolio built around a pun
+            on one of my family names (Boal&nbsp;+&nbsp;Bulbasaur).</p>
+
+          <div class="doc-strip">
+            <!-- The page's whole palette, in the order it reads on screen. Empty
+                 by design: the swatches are the content, and the tones come from
+                 the same custom properties the site paints with. -->
+            <ul class="doc-swatches" aria-hidden="true">
+              <li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+            </ul>
+            <p class="doc-strip__label">Five leaf greens, one ink, one bone-white
+              for the console. The entire page is mixed from these.</p>
+            <ul class="tech doc-stack">
+              <li>HTML</li><li>CSS</li><li>Vanilla JS</li><li>No build step</li>
+            </ul>
+          </div>
+
           <section>
             <h4>What it is</h4>
-            <p>A web app where you type in the ingredients you have and get back recipes ranked by how few extra items you would need to buy.</p>
+            <ul class="doc-list">
+              <li>Retro game-inspired UI touches</li>
+              <li>Custom scroll animations</li>
+              <li>Slide-out project documentation panel</li>
+            </ul>
           </section>
+
           <section>
             <h4>Motivation</h4>
-            <p>I kept opening the fridge with no idea what to cook, and every recipe app assumed I already had a full pantry.</p>
+            <p>I needed a single spot to organize all my projects without creating
+              another generic portfolio. Plot twist: I am not actually a big
+              Pok&eacute;mon fan (no offense to the die-hard fans out there!).</p>
           </section>
+
           <section>
             <h4>Purpose</h4>
-            <p>To practice building a full product end to end: a real backend, a matching algorithm, and a UI people would actually enjoy using.</p>
+            <p>Build an ultra fast, zero dependency static site using pure HTML,
+              CSS, and vanilla JS while sharpening my UI interaction skills without
+              relying on heavy frameworks.</p>
           </section>
+
           <section>
             <h4>Challenges</h4>
-            <p>Matching loose ingredient names (e.g. &ldquo;tomato&rdquo; vs &ldquo;cherry tomatoes&rdquo;) was harder than expected and needed a small normalization layer.</p>
+            <p>Balancing fun visual quirks with smooth performance.</p>
+            <ul class="doc-list">
+              <li>Mapping custom falling-leaf physics directly to scroll progress</li>
+              <li>Managing modal accessibility and focus states cleanly</li>
+              <li>Keeping layout overflow tight across all viewports</li>
+            </ul>
           </section>
+
           <section class="doc-note">
             <h4>What I learned</h4>
-            <p>Got comfortable designing a schema for messy, user-generated ingredient data, and learned how much UX work goes into &ldquo;good enough&rdquo; search.</p>
+            <ul class="doc-list">
+              <li>How far vanilla JS and modern CSS can take you without npm packages</li>
+              <li>Deep dive into IntersectionObserver performance tuning</li>
+              <li>A small visual pun makes a developer portfolio infinitely more memorable</li>
+            </ul>
           </section>
+
+          <!-- The same litter line the page rests on, at the foot of the doc.
+               Same classes, same conversion: a leaf's visual bottom lands at
+               `bottom` + (height - width) / 2, and every one below comes out
+               between -9 and -5, so the band is cut off by the panel edge
+               rather than hovering above it. -->
+          <div class="doc-litter" aria-hidden="true">
+            <i class="leaf leaf--ground" style="--rot:92;  bottom:-16px; left:-2%; width:26px; height:46px"></i>
+            <i class="leaf leaf--ground" style="--rot:-84; bottom:-15px; left:6%;  width:24px; height:42px"></i>
+            <i class="leaf leaf--ground" style="--rot:88;  bottom:-19px; left:14%; width:28px; height:50px"></i>
+            <i class="leaf leaf--ground" style="--rot:-95; bottom:-14px; left:22%; width:26px; height:44px"></i>
+            <i class="leaf leaf--ground" style="--rot:81;  bottom:-18px; left:30%; width:30px; height:52px"></i>
+            <i class="leaf leaf--ground" style="--rot:-90; bottom:-16px; left:38%; width:24px; height:43px"></i>
+            <i class="leaf leaf--ground" style="--rot:96;  bottom:-17px; left:46%; width:28px; height:48px"></i>
+            <i class="leaf leaf--ground" style="--rot:-82; bottom:-15px; left:54%; width:26px; height:45px"></i>
+            <i class="leaf leaf--ground" style="--rot:85;  bottom:-18px; left:62%; width:30px; height:51px"></i>
+            <i class="leaf leaf--ground" style="--rot:-97; bottom:-16px; left:70%; width:24px; height:44px"></i>
+            <i class="leaf leaf--ground" style="--rot:79;  bottom:-17px; left:78%; width:28px; height:47px"></i>
+            <i class="leaf leaf--ground" style="--rot:-88; bottom:-15px; left:86%; width:26px; height:46px"></i>
+            <i class="leaf leaf--ground" style="--rot:94;  bottom:-19px; left:94%; width:30px; height:50px"></i>
+          </div>
+
         </div>
       </article>
+
 
       <article class="card" data-reveal style="--card-index:1">
         <div class="card__shot">
-          <div class="shot shot--empty">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/>
-              <circle cx="8.5" cy="9.5" r="1.5" fill="currentColor"/>
-              <path d="M3.5 17.5 9 12l4 4 3-2.5 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>Website screenshot</span>
-          </div>
-          <a class="card__half card__half--left" href="https://example.com" target="_blank"
-             rel="noopener noreferrer" aria-label="Visit the Routewise website">
+          <img class="shot" src="assets/junkybox.png" width="900" height="709"
+               alt="The Junkybox staff login: a vinyl record and equalizer over a dark green glow, beside the sign-in form."
+               loading="lazy">
+          <a class="card__half card__half--left" href="https://junkybox.stary.pro/" target="_blank"
+             rel="noopener noreferrer" aria-label="Visit the Junkybox website">
             <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
           </a>
           <button class="card__half card__half--right" type="button"
-                  data-doc-for="routewise" aria-label="Read the Routewise project doc">
+                  data-doc-for="junkybox" aria-label="Read the Junkybox project doc">
             <span class="card__action"><span class="card__glyph" aria-hidden="true">&#9776;</span> Doc</span>
           </button>
         </div>
         <div class="card__body">
-          <h3 class="card__title">Routewise</h3>
-          <p class="card__tagline">A trip planner that optimizes multi-stop road trips for scenery, not just speed.</p>
+          <h3 class="card__title">Junkybox</h3>
+          <p class="card__tagline">A digital jukebox for parties and venues. Guests queue the music, the host keeps control.</p>
           <ul class="tech">
-            <li>Vue</li><li>Mapbox</li><li>Python</li>
+            <li>Next.js</li><li>Spotify API</li><li>SSE</li>
           </ul>
+          <a class="card__url" href="https://junkybox.stary.pro/" target="_blank" rel="noopener noreferrer">
+            junkybox.stary.pro<span class="card__url-arrow" aria-hidden="true">&#8599;</span>
+          </a>
         </div>
-        <div class="doc-source" id="routewise" hidden>
-          <section>
-            <h4>What it is</h4>
-            <p>A route planner where you drop pins for places you want to see, and it reorders and suggests the drive that balances time against detour-worthy stops.</p>
-          </section>
-          <section>
-            <h4>Motivation</h4>
-            <p>Planning a road trip with friends always turned into a spreadsheet fight over the &ldquo;best&rdquo; order to visit places.</p>
-          </section>
-          <section>
-            <h4>Purpose</h4>
-            <p>To explore routing algorithms and mapping APIs, and to ship something my friends would actually use on our next trip.</p>
-          </section>
-          <section>
-            <h4>Challenges</h4>
-            <p>Balancing &ldquo;shortest route&rdquo; against &ldquo;most interesting route&rdquo; needed a scoring system that took a few iterations to feel right.</p>
-          </section>
-          <section class="doc-note">
-            <h4>What I learned</h4>
-            <p>Learned how to work with real-world map data and constraint-based optimization, and how to communicate trade-offs simply in the UI.</p>
-          </section>
-        </div>
-      </article>
 
-      <article class="card" data-reveal style="--card-index:2">
-        <div class="card__shot">
-          <div class="shot shot--empty">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.6"/>
-              <circle cx="8.5" cy="9.5" r="1.5" fill="currentColor"/>
-              <path d="M3.5 17.5 9 12l4 4 3-2.5 4.5 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            <span>Website screenshot</span>
+        <!-- Its own skin, and deliberately nothing like the one above it: the
+             app is near-black with a Spotify green, so its doc is too. -->
+        <div class="doc-source" id="junkybox" data-doc-theme="junkybox" hidden>
+
+          <!-- Records bleeding off the edges, the way the app puts one behind
+               its sign-in. Grooves are a repeating-radial-gradient and the
+               label a plain radial one, so the whole thing is two gradients
+               and no image. -->
+          <div class="doc-deck" aria-hidden="true">
+            <span class="doc-vinyl doc-vinyl--a"></span>
+            <span class="doc-vinyl doc-vinyl--b"></span>
+            <span class="doc-vinyl doc-vinyl--c"></span>
           </div>
-          <a class="card__half card__half--left" href="https://example.com" target="_blank"
-             rel="noopener noreferrer" aria-label="Visit the Loopline website">
-            <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
-          </a>
-          <button class="card__half card__half--right" type="button"
-                  data-doc-for="loopline" aria-label="Read the Loopline project doc">
-            <span class="card__action"><span class="card__glyph" aria-hidden="true">&#9776;</span> Doc</span>
-          </button>
-        </div>
-        <div class="card__body">
-          <h3 class="card__title">Loopline</h3>
-          <p class="card__tagline">A tiny browser tool for sketching short audio loops without opening a DAW.</p>
-          <ul class="tech">
-            <li>TypeScript</li><li>Web Audio API</li>
-          </ul>
-        </div>
-        <div class="doc-source" id="loopline" hidden>
+
+          <p class="doc-lede">A digital jukebox app designed for parties and venues.</p>
+
+          <div class="doc-strip">
+            <ul class="doc-eq" aria-hidden="true">
+              <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+              <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+            </ul>
+            <p class="doc-strip__label">One process, one live queue. Every guest
+              request lands in Spotify&rsquo;s own playback, in real time.</p>
+            <ul class="tech doc-stack">
+              <li>Next.js 16</li><li>App Router</li><li>SSE</li><li>Spotify Web API</li><li>Auth.js</li>
+            </ul>
+          </div>
+
           <section>
             <h4>What it is</h4>
-            <p>A minimal step-sequencer that runs entirely in the browser, for quickly sketching a beat idea without launching a full production app.</p>
+            <p>The host or venue connects their Spotify account, allowing guests to
+              scan a QR code, search for songs, and submit requests to a shared
+              queue. Staff or hosts manage live playback through a real-time
+              dashboard while setting custom rules for moderation.</p>
+            <ul class="doc-list">
+              <li>Approving or rejecting requests manually, or enabling automatic approval in real time</li>
+              <li>Moderation rules like blocked artists, explicit content filters, and song limits per device</li>
+              <li>Session summary reports with insights and statistics about requests and user activity</li>
+            </ul>
           </section>
+
+          <!-- The app proper, which the public URL never shows: everything past
+               the sign-in is staff-only. width/height are on every image so the
+               panel does not reflow as they decode, and loading="lazy" means
+               they are only fetched when this doc is opened. -->
+          <section class="doc-gallery">
+            <h4>Inside the app</h4>
+            <figure class="doc-shot">
+              <img src="assets/junkybox-dashboard.webp" width="1200" height="621" loading="lazy"
+                   alt="The Junkybox staff dashboard: counters for pending requests, active tables and songs played, a now-playing panel, and a requests-per-hour chart.">
+              <figcaption>The staff dashboard: pending requests, active tables,
+                and what is playing right now.</figcaption>
+            </figure>
+            <figure class="doc-shot">
+              <img src="assets/junkybox-session.webp" width="1200" height="601" loading="lazy"
+                   alt="The Junkybox live session screen: a now-playing track with transport controls, an approved queue, and an empty pending column.">
+              <figcaption>The live session: the queue, what is approved, and what is
+                up next.</figcaption>
+            </figure>
+            <figure class="doc-shot doc-shot--phone">
+              <img src="assets/junkybox-guest.webp" width="560" height="959" loading="lazy"
+                   alt="The Junkybox guest view on a phone: the track playing now with a progress bar, a button to request a song, and the queue below.">
+              <figcaption>What a guest gets after scanning the QR code on their table
+                No app to install, and an honest estimate of how long until
+                their song plays.</figcaption>
+            </figure>
+          </section>
+
           <section>
             <h4>Motivation</h4>
-            <p>I wanted to capture musical ideas the moment they happened, but opening a heavy DAW always killed the momentum.</p>
+            <p>What started as a side project between a friend and me grew out of a
+              shared frustration with static, boring party playlists. We wanted to
+              create an interactive music experience that engages everyone in the
+              room and eliminates constant manual requests to the host or bartender,
+              all wrapped in a clean, modern interface designed for both staff and
+              guests.</p>
           </section>
+
           <section>
             <h4>Purpose</h4>
-            <p>To get properly comfortable with the Web Audio API and timing-accurate scheduling in JavaScript.</p>
+            <p>To build a single-process, real-time web application using Next.js 16
+              (App Router) with Server-Sent Events (SSE) and master complex
+              integration with the Spotify Web API for live, synchronized playback
+              control.</p>
           </section>
+
           <section>
             <h4>Challenges</h4>
-            <p>Keeping playback perfectly on-beat across tabs and devices took a scheduling rewrite using a look-ahead timer pattern.</p>
+            <p>Maintaining precise real-time synchronization between client requests
+              and Spotify&rsquo;s native queue without exceeding API rate limits or
+              suffering timing drift. On the product side, the main challenge was
+              designing an interface engaging enough to encourage user participation
+              while giving hosts strict, effortless control over the vibe.</p>
           </section>
+
           <section class="doc-note">
             <h4>What I learned</h4>
-            <p>Learned how audio scheduling actually works under the hood, and why naive setTimeout-based sequencers drift out of sync.</p>
+            <p>Through this project, I gained hands-on experience in full-stack
+              architecture and real-time systems, specifically:</p>
+            <ul class="doc-list">
+              <li>Implementing custom long-running background workers within Next.js</li>
+              <li>Managing native Spotify queue synchronization and handling API rate-limiting constraints</li>
+              <li>Structuring multi-role authentication (staff vs. customer) using Auth.js</li>
+              <li>Streaming lightweight live updates using Server-Sent Events (SSE) instead of heavier WebSockets</li>
+              <li>Prototyping and building modern UI designs using Claude Design</li>
+            </ul>
           </section>
+
         </div>
       </article>
 
@@ -452,6 +593,18 @@
     <span>built one project at a time</span>
   </footer>
 
+</div>
+
+<!-- The easter egg behind this card's own links. The href on them is real, so
+     with no script they simply go to the site; with script they land here
+     instead. tabindex lets it take focus, so a keyboard is not left behind the
+     inert page with nowhere to be. -->
+<div class="arcade" id="arcade" role="dialog" aria-modal="true" tabindex="-1"
+     aria-labelledby="arcade-line" hidden>
+  <div class="arcade__box">
+    <p class="arcade__line" id="arcade-line" data-type>Bruv... you already there</p>
+    <p class="arcade__hint">Click anywhere to continue</p>
+  </div>
 </div>
 
 <div class="doc-overlay" id="doc-overlay" hidden></div>
@@ -470,6 +623,6 @@
   </div>
 </aside>
 
-<script src="main.js"></script>
+<script src="main.js?v=10"></script>
 </body>
 </html>

@@ -586,6 +586,119 @@
     });
   }
 
+  /* --- Scroll lock -------------------------------------------------------
+     Shared by everything that covers the page. Pads the body by the width of
+     the scrollbar it is about to remove, so the layout underneath does not
+     jump sideways as the overlay comes up. */
+  function lockScroll(locked) {
+    if (locked) {
+      var barWidth = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.paddingRight = barWidth > 0 ? barWidth + 'px' : '';
+      document.body.classList.add('is-locked');
+    } else {
+      document.body.classList.remove('is-locked');
+      document.body.style.paddingRight = '';
+    }
+  }
+
+  /* --- "You already there" ------------------------------------------------
+     The one card whose website is this website. Its links do not go anywhere:
+     they bring up a full-screen console message instead, which types itself
+     out and waits to be dismissed. The href stays real, so with no script the
+     link still just works. */
+  function initArcade() {
+    var screen = document.getElementById('arcade');
+    var line = document.getElementById('arcade-line');
+    var page = document.getElementById('page');
+    if (!screen || !line || !page) return;
+
+    var CHAR_MS = 62;
+    // The copy lives in index.html, same as the console's. Read once, then the
+    // element is free to be blanked and replayed.
+    var text = line.textContent.trim();
+    var lastFocused = null;
+    var frame = 0;
+
+    function settle() {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      line.textContent = text;
+      line.classList.remove('is-typing');
+    }
+
+    // Driven off elapsed time rather than one timeout per character, for the
+    // same reason as the console: a backgrounded tab clamps timeouts and the
+    // crawl would finish at the wrong speed.
+    function type() {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+
+      if (reduceMotion.matches) {
+        settle();
+        return;
+      }
+
+      line.textContent = '';
+      line.classList.add('is-typing');
+
+      var started = null;
+      frame = requestAnimationFrame(function step(now) {
+        if (started === null) started = now;
+        var take = Math.floor((now - started) / CHAR_MS);
+        line.textContent = text.slice(0, Math.min(take, text.length));
+        if (take >= text.length) {
+          frame = 0;
+          line.classList.remove('is-typing');
+          return;
+        }
+        frame = requestAnimationFrame(step);
+      });
+    }
+
+    function open(trigger) {
+      lastFocused = trigger;
+      screen.hidden = false;
+      page.setAttribute('inert', '');
+      lockScroll(true);
+      screen.focus();
+      type();
+    }
+
+    function close() {
+      if (screen.hidden) return;
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      screen.hidden = true;
+      page.removeAttribute('inert');
+      lockScroll(false);
+      if (lastFocused) {
+        lastFocused.focus();
+        lastFocused = null;
+      }
+    }
+
+    document.addEventListener('click', function (e) {
+      var trigger = e.target.closest('[data-already-here]');
+      if (!trigger) return;
+      e.preventDefault();
+      open(trigger);
+    });
+
+    // Bound to the screen rather than the document: on the document, the very
+    // click that opened it would bubble up and close it in the same tick.
+    screen.addEventListener('click', function () {
+      // Mid-crawl, the first click fills the line in rather than dismissing —
+      // the way those consoles always let you skip ahead.
+      if (frame) settle(); else close();
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (screen.hidden) return;
+      e.preventDefault();
+      if (frame) settle(); else close();
+    });
+  }
+
   /* --- Project doc panel ------------------------------------------------- */
   function initDocPanel() {
     var overlay = document.getElementById('doc-overlay');
@@ -600,17 +713,6 @@
     var lastFocused = null;
     var closeTimer = null;
 
-    function lockScroll(locked) {
-      if (locked) {
-        var barWidth = window.innerWidth - document.documentElement.clientWidth;
-        document.body.style.paddingRight = barWidth > 0 ? barWidth + 'px' : '';
-        document.body.classList.add('is-locked');
-      } else {
-        document.body.classList.remove('is-locked');
-        document.body.style.paddingRight = '';
-      }
-    }
-
     function open(trigger) {
       var card = trigger.closest('.card');
       var source = document.getElementById(trigger.getAttribute('data-doc-for'));
@@ -622,6 +724,13 @@
 
       titleEl.textContent = title ? title.textContent : '';
       bodyEl.innerHTML = source.innerHTML;
+
+      // Each project can dress the panel in its own design. The doc source
+      // names a skin in data-doc-theme; the stylesheet has the rules under
+      // .doc-panel[data-doc-theme="..."]. No theme falls back to the plain one.
+      var theme = source.getAttribute('data-doc-theme');
+      if (theme) panel.setAttribute('data-doc-theme', theme);
+      else panel.removeAttribute('data-doc-theme');
 
       overlay.hidden = false;
       panel.hidden = false;
@@ -651,11 +760,15 @@
         lastFocused = null;
       }
 
+      // Theme included: dropped on the way out with everything else, so the
+      // panel keeps its skin for the whole slide rather than reverting to the
+      // plain one part-way through it.
       closeTimer = window.setTimeout(function () {
         overlay.hidden = true;
         panel.hidden = true;
         bodyEl.innerHTML = '';
         titleEl.textContent = '';
+        panel.removeAttribute('data-doc-theme');
       }, reduceMotion.matches ? 0 : CLOSE_MS);
     }
 
@@ -699,4 +812,5 @@
   initRetroConsole(initMascotNote());
   initAnchorScroll();
   initDocPanel();
+  initArcade();
 })();
