@@ -26,11 +26,23 @@
   --note-bg:      oklch(0.95 0.03 155);
   --note-label:   oklch(0.32 0.09 155);
   --note-text:    oklch(0.3 0.08 155);
+  /* Five leaf tones, spread across lightness and a little across hue: a couple
+     catching the light, a couple sitting in shade. Decorative shapes at half
+     opacity, so none of them carries a contrast requirement. */
   --leaf-a:       oklch(0.72 0.13 150);
   --leaf-b:       oklch(0.6 0.15 145);
+  --leaf-c:       oklch(0.79 0.1 152);
+  --leaf-d:       oklch(0.66 0.14 160);
+  --leaf-e:       oklch(0.53 0.15 143);
 
   --link:         oklch(0.42 0.1 155);
   --link-hover:   oklch(0.32 0.1 155);
+
+  /* Retro console — the mascot's help menu. Its own near-black-on-bone pair,
+     deliberately outside the page's ink ramp: the point of the panel is that
+     it looks like a different device sitting on top of the page. */
+  --retro-bg:     #fdfdf8;
+  --retro-ink:    #2b2b2b;
 
   --display: 'Space Grotesk', system-ui, sans-serif;
   --body: 'Inter', system-ui, sans-serif;
@@ -171,10 +183,18 @@ a:hover { color: var(--link-hover); }
 }
 /* Landed leaves sit a little heavier than the ones still in the air. */
 .leaf--ground { opacity: 0.62; }
-.leaf:nth-of-type(even) {
-  background: var(--leaf-b);
-  border-radius: 100% 0% 100% 0%;
-}
+
+/* Shape mirrors on a period of two and tone cycles on a period of five, so the
+   two only line up again every tenth leaf. Kept as separate rules rather than
+   one alternating block: with the litter line this dense, tying tone to the
+   shape would band it into visible stripes. `.leaves` holds no other <i>, so
+   nth-of-type counts leaves and nothing else. */
+.leaf:nth-of-type(even)  { border-radius: 100% 0% 100% 0%; }
+.leaf:nth-of-type(5n+1)  { background: var(--leaf-a); }
+.leaf:nth-of-type(5n+2)  { background: var(--leaf-b); }
+.leaf:nth-of-type(5n+3)  { background: var(--leaf-c); }
+.leaf:nth-of-type(5n+4)  { background: var(--leaf-d); }
+.leaf:nth-of-type(5n)    { background: var(--leaf-e); }
 
 @keyframes float-slow {
   0%, 100% { transform: translateY(0); }
@@ -302,10 +322,20 @@ a:hover { color: var(--link-hover); }
   display: inline-block;
   margin-top: 72px;
 }
+.mascot__button {
+  display: inline-block;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
 .mascot__note {
   position: absolute;
   top: -46px;
   left: 8px;
+  z-index: 6;   /* stays above the console panel */
   background: var(--ink);
   color: oklch(0.98 0.005 95);
   font-size: 13px;
@@ -313,6 +343,13 @@ a:hover { color: var(--link-hover); }
   padding: 9px 14px;
   border-radius: 14px 14px 14px 4px;
   white-space: nowrap;
+  /* The line swaps out and back in rather than cross-fading, so the bubble is
+     never mid-resize with readable text in it. */
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.mascot__note.is-swapping {
+  opacity: 0;
+  transform: translateY(4px);
 }
 /* Three stacked transforms, one per layer, so they never overwrite each other:
    .mascot__tilt leans the head toward the pointer, .mascot__frame carries the
@@ -351,6 +388,176 @@ a:hover { color: var(--link-hover); }
     translate(calc(var(--mascot-look-x) * 1px), calc(var(--mascot-look-y) * 1px))
     scale(1.18);
   transition: transform 0.18s ease-out;
+}
+
+/* --- Retro console ------------------------------------------------------
+   Clicking the mascot shakes it, then this pops in beside it and types its
+   text out a character at a time, like a handheld console's dialogue box. */
+
+/* Applied to the same element the pointer tilt sits on. While an animation is
+   running it wins over the element's own transform, so the tilt is suspended
+   for the length of the shake and resumes afterwards on its own — no need to
+   suppress it from script. */
+.mascot__tilt.is-shaking { animation: pixel-shake 0.4s ease-in-out; }
+
+@keyframes pixel-shake {
+  0%, 100% { transform: translateX(0)    rotate(0deg); }
+  20%      { transform: translateX(-6px) rotate(-6deg); }
+  40%      { transform: translateX(6px)  rotate(6deg); }
+  60%      { transform: translateX(-4px) rotate(-4deg); }
+  80%      { transform: translateX(4px)  rotate(4deg); }
+}
+
+.retro {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 28px);
+  z-index: 5;
+  width: 290px;
+  padding: 16px 18px;
+  background: var(--retro-bg);
+  /* The frame is one `double` border, not a box inside a box: `double` is
+     already two lines with a gap, which is exactly the console look. */
+  border: 6px double var(--retro-ink);
+  border-radius: 4px;
+  box-shadow: 0 12px 28px rgba(20, 20, 15, 0.18);
+  font-family: 'Courier New', monospace;
+  color: var(--retro-ink);
+  animation: retro-pop 0.22s ease-out;
+}
+
+@keyframes retro-pop {
+  from { opacity: 0; transform: scale(0.85) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.retro__heading {
+  margin: 0 0 14px;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+}
+
+.retro__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.retro__row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--retro-ink);
+  text-align: left;
+  cursor: pointer;
+}
+.retro__row:hover { color: var(--green); }
+
+/* Reserved and hidden rather than added on select, so moving down the menu
+   never nudges the labels sideways. Keeps its own colour so a hovered row
+   tinting green does not drag the caret green with it. */
+.retro__caret {
+  flex: none;
+  width: 14px;
+  visibility: hidden;
+  color: var(--retro-ink);
+}
+.retro__row.is-selected .retro__caret { visibility: visible; }
+
+/* The caret is the entire selection marker — no colour shift, no bolding, and
+   no focus ring. Scoped to the menu on purpose: these rows always carry the
+   caret, which tracks focus (arrow keys and Tab both move it) and reads more
+   clearly than a ring drawn around a text label. BACK and SEND live outside
+   this list, have no caret, and so keep the page's normal focus outline. */
+.retro__menu .retro__row:focus-visible { outline: none; }
+
+/* BACK on its own line, under content rather than beside it. */
+.retro__row--lead {
+  width: auto;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.retro__lines {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 14px;
+  font-size: 13.5px;
+}
+.retro__lines p { margin: 0; }
+
+.retro__body {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.retro__body:last-child { margin-bottom: 0; }
+
+.retro__link {
+  display: inline-block;
+  margin-bottom: 14px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--retro-ink);
+}
+.retro__link:hover { color: var(--green); }
+
+.retro__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.retro__actions .retro__row {
+  width: auto;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.retro__input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 8px;
+  border: 2px solid var(--retro-ink);
+  border-radius: 2px;
+  background: var(--retro-bg);
+  color: var(--retro-ink);
+  font-family: inherit;
+  font-size: 13px;
+  resize: none;
+}
+
+/* The block cursor chasing the text as it types. Drawn on the element being
+   typed into, so it moves line to line by itself. */
+[data-type].is-typing::after {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 1px;
+  background: currentColor;
+  vertical-align: -0.14em;
+  animation: retro-caret 0.6s steps(1) infinite;
+}
+
+@keyframes retro-caret {
+  0%, 49%   { opacity: 1; }
+  50%, 100% { opacity: 0; }
 }
 
 /* --- Projects ----------------------------------------------------------- */
@@ -642,6 +849,17 @@ a:hover { color: var(--link-hover); }
   .card__shot { height: 220px; }
   .hero__sub { font-size: 17px; }
   .doc-panel__inner { padding: 28px 24px; }
+
+  /* No room for 290px beside a 96px mascot here, so the console drops into
+     flow underneath it instead of being absolutely placed off its right edge.
+     .mascot goes block so the panel gets the row to itself; the button keeps
+     the mascot at its own size rather than stretching across it. */
+  .mascot { display: block; }
+  .retro {
+    position: static;
+    width: min(290px, 100%);
+    margin-top: 20px;
+  }
 }
 
 /* Touch devices have no hover, so surface both actions permanently. */
@@ -662,6 +880,11 @@ a:hover { color: var(--link-hover); }
   /* Leaves keep their resting rotation — main.js never moves them here. */
   .blob, .blob > i, .mascot__frame { animation: none; }
   .blob, .mascot__tilt, .mascot__img { transform: none; transition: none; }
+  /* main.js also skips the shake delay and types nothing — the console just
+     appears with its text already in place. */
+  .mascot__tilt.is-shaking, .retro, [data-type].is-typing::after { animation: none; }
+  /* main.js swaps the bubble's line outright here instead of fading it. */
+  .mascot__note { transition: none; }
   [data-reveal] {
     opacity: 1;
     transform: none;
