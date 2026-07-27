@@ -12,7 +12,7 @@ design/       the Claude Design source this was built from (reference only)
 
 ## Cache busting
 
-`index.html` links `styles.css?v=10` and `main.js?v=10`. **Bump both numbers when
+`index.html` links `styles.css?v=11` and `main.js?v=11`. **Bump both numbers when
 you change either file.** With no build step there is nothing fingerprinting
 these, and a browser holding an old `styles.css` will pair it with freshly
 changed markup — the page comes out as unstyled content in the right shape,
@@ -83,6 +83,21 @@ and both leaf layers built from the *same* `.leaf` markup as the page, so they
 inherit its shapes, tones and alternation with no rules of their own: `.doc-leaves`
 scattered behind the text at low opacity, and `.doc-litter` piled at the foot.
 
+The other two are each sampled from the app they document, and are the proof the
+theming is real: same panel, same primitives, nothing in common with one another.
+`junkybox` is near-black and Spotify green, with equalizer heading markers, a
+live meter in the strip, vinyl bullets, and records bleeding off the edges.
+`betweenus` is the map app's navy and teal, and borrows its furniture: the target
+it marks the exact midpoint with for headings, its participant pins (teal, amber,
+violet, in the app's own order) for bullets, the rings its search walks behind
+the text, and three travel times pulling level in the strip. Both are drawn
+entirely in CSS — gradients, borders and a border radius, no images.
+
+Anything that animates needs a line in the `prefers-reduced-motion` block at the
+foot of the stylesheet. Cancelling the animation is not always enough on its own:
+`.doc-legs` is sized by the animation, so it has to be given its resting width
+there as well, or it holds at the uneven state the animation starts from.
+
 ### Adding a screenshot
 
 ```html
@@ -99,6 +114,23 @@ Always set `width` and `height` on them: the aspect ratio comes off those
 attributes, so a shot holds its space from first paint instead of reflowing the
 panel under whoever is reading it. `loading="lazy"` keeps them off the wire until
 someone actually opens that doc.
+
+Card shots are WebP for the same reason, and are cropped to the card frame's own
+ratio (900&times;709, or 1.269) so `cover` has nothing left to throw away. A raw
+capture rarely arrives at that ratio, so crop to whichever of its dimensions
+fits and let the other be the constraint:
+
+```sh
+python3 -c "
+from PIL import Image
+im = Image.open('raw.png').convert('RGB')
+w = round(im.height * 900 / 709)
+im.crop((0, 0, w, im.height)).save('assets/my-project.webp', quality=88, method=6)"
+```
+
+A shot of a dark app wants `.doc-shot img` given a border and a mat in the theme,
+or its edges dissolve into a dark panel. A portrait one wants `.doc-shot--phone`,
+which sets it at 186px beside its caption instead of running it past the fold.
 
 `assets/boalbasaur-platform.png` is this site's own hero, cropped to the card
 frame's ratio so `cover` has nothing to throw away. To regenerate it after a

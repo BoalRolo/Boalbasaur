@@ -1401,6 +1401,266 @@ a:hover { color: var(--link-hover); }
   top: 74%; right: -170px; width: 260px; height: 260px; opacity: 0.38;
 }
 
+/* --- Doc panel: betweenus theme -----------------------------------------
+   A dark map, and the app's own furniture drawn in CSS: the target it marks
+   the exact midpoint with, the pins it drops on people, the rings its search
+   walks, and three travel times pulling level. Tokens sampled from the running
+   app and declared on the themed panel, like the theme above, so they exist
+   only while this doc is open.
+
+   The three bullet colours are the first three of the app's participant
+   palette, in its order — a reader who has used it recognises them as person
+   one, two and three before reading a word. */
+.doc-panel[data-doc-theme="betweenus"] {
+  --bu-bg:        #0a0e14;
+  --bu-surface:   #111620;
+  --bu-surface-2: #161d29;
+  --bu-line:      rgba(255, 255, 255, 0.08);
+  --bu-line-mid:  rgba(255, 255, 255, 0.16);
+  --bu-teal:      #2dd4bf;
+  --bu-teal-soft: rgba(45, 212, 191, 0.1);
+  --bu-teal-line: rgba(45, 212, 191, 0.4);
+  --bu-amber:     #f5b642;
+  --bu-violet:    #a78bfa;
+  --bu-ink:       #e8edf4;
+  --bu-ink-mid:   #93a1b5;
+  --bu-ink-soft:  #5f6d80;
+
+  /* The app's own glow, which sits over the meeting point rather than in a
+     corner, so this one is centred too. */
+  background:
+    radial-gradient(105% 44% at 50% 0%, #11242f 0%, rgba(17, 36, 47, 0) 64%),
+    var(--bu-bg);
+}
+
+.doc-panel[data-doc-theme="betweenus"] :focus-visible { outline-color: var(--bu-teal); }
+
+.doc-panel[data-doc-theme="betweenus"] .doc-panel__head {
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--bu-line);
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-panel__eyebrow {
+  font-family: var(--display);
+  font-size: 11.5px;
+  letter-spacing: 0.18em;
+  color: var(--bu-teal);
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-panel__title { color: var(--bu-ink); }
+.doc-panel[data-doc-theme="betweenus"] .doc-panel__close {
+  background: var(--bu-surface-2);
+  border: 1px solid var(--bu-line);
+  border-radius: 10px;
+  color: var(--bu-ink);
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-panel__close:hover {
+  background: var(--bu-surface);
+  border-color: var(--bu-teal);
+  color: var(--bu-teal);
+}
+
+.doc-panel[data-doc-theme="betweenus"] .doc-panel__body p { color: var(--bu-ink-mid); }
+.doc-panel[data-doc-theme="betweenus"] .doc-lede {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.45;
+  letter-spacing: -0.015em;
+  color: var(--bu-ink);
+}
+
+/* Headings carry the target the app marks its exact midpoint with: a ring with
+   its centre dotted. Two rings would be truer to the icon and unreadable at
+   13px, so it keeps the outer one and the dot. */
+.doc-panel[data-doc-theme="betweenus"] .doc-panel__body h4 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--bu-teal);
+  margin: 0 0 14px;
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-panel__body h4::before {
+  content: '';
+  flex: none;
+  width: 13px;
+  height: 13px;
+  border: 1px solid var(--bu-teal);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--bu-teal) 0 30%, rgba(0, 0, 0, 0) 31%);
+}
+
+/* Bullets are the map pins, in the palette's order. The teardrop is one corner
+   of the border-radius left square and the whole thing turned 45deg, so the
+   point lands at the bottom; the hole is where the app puts the person's
+   number. */
+.doc-panel[data-doc-theme="betweenus"] .doc-list {
+  padding-left: 0;
+  list-style: none;
+  gap: 11px;
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-list li {
+  position: relative;
+  padding-left: 26px;
+  color: var(--bu-ink-mid);
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-list li::before {
+  content: '';
+  position: absolute;
+  left: 1px;
+  top: 0.52em;
+  width: 12px;
+  height: 12px;
+  margin-top: -7px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background:
+    radial-gradient(circle, var(--bu-bg) 0 26%, rgba(0, 0, 0, 0) 27%),
+    var(--bu-teal);
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-list li:nth-child(3n+2)::before {
+  background: radial-gradient(circle, var(--bu-bg) 0 26%, rgba(0, 0, 0, 0) 27%), var(--bu-amber);
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-list li:nth-child(3n)::before {
+  background: radial-gradient(circle, var(--bu-bg) 0 26%, rgba(0, 0, 0, 0) 27%), var(--bu-violet);
+}
+
+/* --- The strip: three trips, pulled level ------------------------------- */
+.doc-panel[data-doc-theme="betweenus"] .doc-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid var(--bu-line);
+  border-radius: 16px;
+  background: var(--bu-surface);
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-legs {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* The li is the track, its ::before the trip. Sitting the fill on top of a
+   track is what makes a short bar read as a short trip rather than as a bar
+   that has not finished drawing. */
+.doc-panel[data-doc-theme="betweenus"] .doc-legs li {
+  position: relative;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-legs li::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--bu-teal);
+  /* Grown from the left, so the bars share a start line and only their ends
+     move — which is the whole comparison. */
+  transform-origin: 0 50%;
+  animation: bu-balance 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-legs li:nth-child(2)::before { background: var(--bu-amber); }
+.doc-panel[data-doc-theme="betweenus"] .doc-legs li:nth-child(3)::before { background: var(--bu-violet); }
+
+/* Each bar starts at its own length, carried on --from in the markup, and they
+   all end at the same one. No delays: they have to arrive together, or it reads
+   as three bars animating instead of a gap closing. */
+@keyframes bu-balance {
+  from { transform: scaleX(var(--from, 0.5)); }
+  to   { transform: scaleX(0.86); }
+}
+
+.doc-panel[data-doc-theme="betweenus"] .doc-strip__label {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--bu-ink-soft);
+  margin: 0;
+}
+.doc-panel[data-doc-theme="betweenus"] .tech li {
+  background: var(--bu-surface-2);
+  border: 1px solid var(--bu-line);
+  color: var(--bu-teal);
+}
+
+/* Same reasoning as the theme above: dark UI shots on a dark panel need a mat
+   and a hairline, or their edges dissolve into the background. */
+.doc-panel[data-doc-theme="betweenus"] .doc-shot img {
+  border: 1px solid var(--bu-line);
+  border-radius: 12px;
+  background: var(--bu-surface);
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-shot figcaption {
+  color: var(--bu-ink-soft);
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-gallery { gap: 22px; }
+
+/* --- The closing block, as the answer card ------------------------------
+   The app gives its chosen meeting point a teal card and the exact midpoint a
+   dashed one, since the dash says provisional. This block is the conclusion,
+   so it gets the solid one. */
+.doc-panel[data-doc-theme="betweenus"] .doc-note {
+  padding: 22px 22px 24px;
+  border: 1px solid var(--bu-teal-line);
+  border-radius: 16px;
+  background: var(--bu-teal-soft);
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-note h4 { color: var(--bu-teal); }
+.doc-panel[data-doc-theme="betweenus"] .doc-note p  { color: var(--bu-ink-mid); }
+
+/* --- The map behind the doc ---------------------------------------------
+   Layered like .doc-leaves and .doc-deck before it: the body is the stacking
+   context, this sits at -1 inside it, and it clips at the panel's edges.
+   The graticule is two repeating gradients on the layer itself; the rings are
+   the ones the search walks, dropping candidates around a centre and shrinking
+   until the times stop moving. Each is pushed far enough out that the panel
+   cuts it, the way the viewport cuts them in the app. */
+.doc-panel[data-doc-theme="betweenus"] .doc-panel__body {
+  position: relative;
+  z-index: 0;
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-atlas {
+  position: absolute;
+  inset: 0 -36px -36px;
+  z-index: -1;
+  overflow: hidden;
+  overflow: clip;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.026) 0 1px, rgba(0, 0, 0, 0) 1px 68px),
+    repeating-linear-gradient(0deg,  rgba(255, 255, 255, 0.026) 0 1px, rgba(0, 0, 0, 0) 1px 68px);
+}
+.doc-ring {
+  position: absolute;
+  border: 1px dashed var(--bu-teal-line);
+  border-radius: 50%;
+}
+/* The inner ring is the next round of the search: same centre, smaller radius.
+   Inset as a percentage, so both rings shrink by the same ratio however large
+   the outer one is drawn. */
+.doc-ring::before {
+  content: '';
+  position: absolute;
+  inset: 22%;
+  border: 1px dashed var(--bu-line-mid);
+  border-radius: 50%;
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-ring--a {
+  top: 2%; right: -170px; width: 320px; height: 320px; opacity: 0.5;
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-ring--b {
+  top: 39%; left: -160px; width: 280px; height: 280px; opacity: 0.42;
+}
+.doc-panel[data-doc-theme="betweenus"] .doc-ring--c {
+  top: 76%; right: -140px; width: 240px; height: 240px; opacity: 0.34;
+}
+
 /* --- "You already there" ------------------------------------------------
    The full-screen console message behind this site's own card links. Same
    double-line frame and pixel type as the mascot's console, inverted onto a
@@ -1507,6 +1767,7 @@ a:hover { color: var(--link-hover); }
   .doc-panel[data-doc-theme="boalbasaur"] .doc-litter { margin: 0 -24px -28px; }
   .doc-panel[data-doc-theme="boalbasaur"] .doc-leaves { inset: 0 -24px -28px; }
   .doc-panel[data-doc-theme="junkybox"]   .doc-deck   { inset: 0 -24px -28px; }
+  .doc-panel[data-doc-theme="betweenus"]  .doc-atlas  { inset: 0 -24px -28px; }
 
   /* No room to set a phone shot beside its caption on a narrow panel. */
   .doc-shot--phone {
@@ -1552,6 +1813,10 @@ a:hover { color: var(--link-hover); }
   .mascot__tilt.is-shaking, .retro, [data-type].is-typing::after { animation: none; }
   /* The equalizer holds at its bar heights instead of bouncing. */
   .doc-eq li { animation: none; }
+  /* The three trips hold level, which is the state the animation was showing
+     you anyway. Cancelling the animation alone would leave them at --from, so
+     the balanced width is set here outright. */
+  .doc-legs li::before { animation: none; transform: scaleX(0.86); }
   /* No fade, no pop, no blink — the message is simply there, with its line
      already typed. main.js skips the crawl to match. */
   .arcade, .arcade__box, .arcade__hint { animation: none; }

@@ -29,7 +29,7 @@
      freshly-changed markup: the page renders as unstyled content in the right
      shape, which looks like the CSS is broken rather than stale. Bump the
      number whenever styles.css or main.js changes. -->
-<link rel="stylesheet" href="styles.css?v=10">
+<link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body>
 
@@ -304,6 +304,295 @@
 
       <article class="card" data-reveal style="--card-index:0">
         <div class="card__shot">
+          <img class="shot" src="assets/betweenus.webp" width="699" height="551"
+               alt="BetweenUs: three people listed in the side panel and a map of Iberia with their routes converging on a point in south-west France."
+               loading="lazy">
+          <a class="card__half card__half--left" href="https://betweenus-app.pages.dev/" target="_blank"
+             rel="noopener noreferrer" aria-label="Visit the BetweenUs website">
+            <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
+          </a>
+          <button class="card__half card__half--right" type="button"
+                  data-doc-for="betweenus" aria-label="Read the BetweenUs project doc">
+            <span class="card__action"><span class="card__glyph" aria-hidden="true">&#9776;</span> Doc</span>
+          </button>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">BetweenUs</h3>
+          <p class="card__tagline">Everyone says where they are. It finds the spot they all reach in the same time, so nobody drives the long way.</p>
+          <ul class="tech">
+            <li>Vanilla JS</li><li>Leaflet</li><li>OSRM</li>
+          </ul>
+          <a class="card__url" href="https://betweenus-app.pages.dev/" target="_blank" rel="noopener noreferrer">
+            betweenus-app.pages.dev<span class="card__url-arrow" aria-hidden="true">&#8599;</span>
+          </a>
+        </div>
+
+        <!-- Its own skin, sampled from the app: near-black navy with the teal,
+             amber and violet it gives the first three people. Its furniture is
+             the app's own furniture, all of it drawn in CSS: pins for bullets,
+             the exact-midpoint target for headings, the search rings behind
+             the text, and travel times that balance in the strip. -->
+        <div class="doc-source" id="betweenus" data-doc-theme="betweenus" hidden>
+
+          <!-- The rings the search actually walks: it drops candidate points on
+               a ring around a centre, keeps the best, and shrinks. Here they sit
+               off the edges, so the panel cuts them the way the viewport cuts
+               them in the app. -->
+          <div class="doc-atlas" aria-hidden="true">
+            <span class="doc-ring doc-ring--a"></span>
+            <span class="doc-ring doc-ring--b"></span>
+            <span class="doc-ring doc-ring--c"></span>
+          </div>
+
+          <p class="doc-lede">Everyone marks where they are. It finds the point
+            from which all of them travel the same, and tells you what is there.</p>
+
+          <div class="doc-strip">
+            <!-- Three people's travel times, pulled level and let go again. The
+                 whole app is this loop: move the point, remeasure, close the
+                 gap between the longest trip and the shortest. -->
+            <ul class="doc-legs" aria-hidden="true">
+              <li style="--from:0.42"></li>
+              <li style="--from:1"></li>
+              <li style="--from:0.63"></li>
+            </ul>
+            <p class="doc-strip__label">Two answers per search. The exact
+              midpoint, equidistant and quite often at sea, and the one on real
+              roads that everyone actually reaches in the same time.</p>
+            <ul class="tech doc-stack">
+              <li>Vanilla JS</li><li>Leaflet</li><li>OSRM</li><li>Overpass</li><li>Nominatim</li><li>No build step</li>
+            </ul>
+          </div>
+
+          <section>
+            <h4>What it is</h4>
+            <p>Add the people, pick walking or driving, and the map answers with
+              a place: a town, its region, and a line of its history. Everyone
+              gets a route in their own colour with their travel time on it, so
+              the fairness is something you can read rather than take on trust.</p>
+            <ul class="doc-list">
+              <li>The exact midpoint, where nobody is further from the meeting than anyone else</li>
+              <li>The realistic meeting point, snapped to roads and picked so the longest trip is as short as it can be</li>
+              <li>The gap between the longest and shortest trip, which is the number the search is trying to get to zero</li>
+              <li>Restaurants, bars, caf&eacute;s and points of interest around the answer, sorted by distance</li>
+            </ul>
+          </section>
+
+          <section class="doc-gallery">
+            <h4>What a search answers with</h4>
+            <figure class="doc-shot">
+              <img src="assets/betweenus-point.webp" width="752" height="966" loading="lazy"
+                   alt="The meeting point panel: an exact midpoint near Elvas, the chosen town Campo Maior with a paragraph of its history, both people at 2h57, and a travel-time gap of 0 min.">
+              <figcaption>Two people out of Coimbra and somewhere east of it, and
+                the gap between their trips is zero. The exact midpoint landed in
+                a field outside Elvas, so the meeting is in Campo Maior, with the
+                first paragraph Wikipedia has on it.</figcaption>
+            </figure>
+            <figure class="doc-shot">
+              <img src="assets/betweenus-nearby.webp" width="889" height="1024" loading="lazy"
+                   alt="The map zoomed in on the Basque coast: three coloured routes running side by side into the meeting pin, glyph chips for nearby places, and a popup for Caf&eacute; Garra.">
+              <figcaption>Zoomed in, the routes share the last few kilometres of
+                road. They are drawn a few pixels apart so all three stay
+                readable, and the places around the point are tinted by what they
+                are.</figcaption>
+            </figure>
+            <figure class="doc-shot doc-shot--phone">
+              <img src="assets/betweenus-places.webp" width="640" height="1076" loading="lazy"
+                   alt="The side panel: walking and driving buttons, the find button, and a tabbed list of nearby places with distances.">
+              <figcaption>What is worth the trip once you are there. The tabs
+                count what they hold, and walking searches a couple of kilometres
+                where driving searches tens.</figcaption>
+            </figure>
+          </section>
+
+          <section>
+            <h4>Motivation</h4>
+            <p>Meeting halfway is normally settled by whoever gives in first, and
+              someone always drives twice as long while insisting they do not
+              mind. I wanted the argument replaced by a number. The exact
+              midpoint is the other half of it: usually it is open water and
+              useless, but every so often it lands on a small town nobody in the
+              group has heard of, and then the answer to where should we meet is
+              somewhere you have to go and look up.</p>
+          </section>
+
+          <section>
+            <h4>Purpose</h4>
+            <p>Run a real optimisation loop in a browser tab. One static page, no
+              backend, no API keys and no sign-up, on public services that owe me
+              nothing: OSRM for the roads, Nominatim for the addresses, Overpass
+              for the places, Wikipedia for the history.</p>
+          </section>
+
+          <section>
+            <h4>Challenges</h4>
+            <p>The fair point is not the average of the coordinates. Averaging
+              puts three friends in the Bay of Biscay, and even the true
+              equidistant point is only fair as the crow flies, which nobody
+              travels.</p>
+            <ul class="doc-list">
+              <li>Candidates are sampled along the real routes between people, then refined on shrinking rings until the travel times stop moving apart</li>
+              <li>Every service is public and rate limited: one request a second to Nominatim, mirrors of Overpass that return an error page with a 200, and a demo routing server that throttles bursts</li>
+              <li>Routes that converge on the same road hide one another, so each is shifted sideways in screen pixels and recomputed on every zoom</li>
+              <li>The panels float over the map, so fitting the view has to account for the pixels they cover or the answer lands underneath them</li>
+            </ul>
+          </section>
+
+          <section class="doc-note">
+            <h4>What I learned</h4>
+            <ul class="doc-list">
+              <li>Nobody gets the short straw has a name in geometry: it is the Chebyshev centre, and on a sphere you reach it by core set iteration</li>
+              <li>Scoring candidates by twice the worst trip minus the best one, which rewards a low ceiling and punishes a lucky winner</li>
+              <li>Being a good guest on free infrastructure: a queue with a gap in it, backoff that knows which errors will never come good, and a cache that survives reloads</li>
+              <li>Leaflet past the tutorial, where you draw your own things in screen space and take its click handling apart</li>
+              <li>How much of a design reads as illustration when it is really two gradients and a border radius</li>
+            </ul>
+          </section>
+
+        </div>
+      </article>
+
+
+      <article class="card" data-reveal style="--card-index:1">
+        <div class="card__shot">
+          <img class="shot" src="assets/junkybox.png" width="900" height="709"
+               alt="The Junkybox staff login: a vinyl record and equalizer over a dark green glow, beside the sign-in form."
+               loading="lazy">
+          <a class="card__half card__half--left" href="https://junkybox.stary.pro/" target="_blank"
+             rel="noopener noreferrer" aria-label="Visit the Junkybox website">
+            <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
+          </a>
+          <button class="card__half card__half--right" type="button"
+                  data-doc-for="junkybox" aria-label="Read the Junkybox project doc">
+            <span class="card__action"><span class="card__glyph" aria-hidden="true">&#9776;</span> Doc</span>
+          </button>
+        </div>
+        <div class="card__body">
+          <h3 class="card__title">Junkybox</h3>
+          <p class="card__tagline">A digital jukebox for parties and venues. Guests queue the music, the host keeps control.</p>
+          <ul class="tech">
+            <li>Next.js</li><li>Spotify API</li><li>SSE</li>
+          </ul>
+          <a class="card__url" href="https://junkybox.stary.pro/" target="_blank" rel="noopener noreferrer">
+            junkybox.stary.pro<span class="card__url-arrow" aria-hidden="true">&#8599;</span>
+          </a>
+        </div>
+
+        <!-- Its own skin too, and the point of the pair is that two dark docs
+             still read as two different apps: this one is near-black with a
+             Spotify green, and everything in it is a record or a meter. -->
+        <div class="doc-source" id="junkybox" data-doc-theme="junkybox" hidden>
+
+          <!-- Records bleeding off the edges, the way the app puts one behind
+               its sign-in. Grooves are a repeating-radial-gradient and the
+               label a plain radial one, so the whole thing is two gradients
+               and no image. -->
+          <div class="doc-deck" aria-hidden="true">
+            <span class="doc-vinyl doc-vinyl--a"></span>
+            <span class="doc-vinyl doc-vinyl--b"></span>
+            <span class="doc-vinyl doc-vinyl--c"></span>
+          </div>
+
+          <p class="doc-lede">A digital jukebox app designed for parties and venues.</p>
+
+          <div class="doc-strip">
+            <ul class="doc-eq" aria-hidden="true">
+              <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+              <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
+            </ul>
+            <p class="doc-strip__label">One process, one live queue. Every guest
+              request lands in Spotify&rsquo;s own playback, in real time.</p>
+            <ul class="tech doc-stack">
+              <li>Next.js 16</li><li>App Router</li><li>SSE</li><li>Spotify Web API</li><li>Auth.js</li>
+            </ul>
+          </div>
+
+          <section>
+            <h4>What it is</h4>
+            <p>The host or venue connects their Spotify account, allowing guests to
+              scan a QR code, search for songs, and submit requests to a shared
+              queue. Staff or hosts manage live playback through a real-time
+              dashboard while setting custom rules for moderation.</p>
+            <ul class="doc-list">
+              <li>Approving or rejecting requests manually, or enabling automatic approval in real time</li>
+              <li>Moderation rules like blocked artists, explicit content filters, and song limits per device</li>
+              <li>Session summary reports with insights and statistics about requests and user activity</li>
+            </ul>
+          </section>
+
+          <!-- The app proper, which the public URL never shows: everything past
+               the sign-in is staff-only. width/height are on every image so the
+               panel does not reflow as they decode, and loading="lazy" means
+               they are only fetched when this doc is opened. -->
+          <section class="doc-gallery">
+            <h4>Inside the app</h4>
+            <figure class="doc-shot">
+              <img src="assets/junkybox-dashboard.webp" width="1200" height="621" loading="lazy"
+                   alt="The Junkybox staff dashboard: counters for pending requests, active tables and songs played, a now-playing panel, and a requests-per-hour chart.">
+              <figcaption>The staff dashboard: pending requests, active tables,
+                and what is playing right now.</figcaption>
+            </figure>
+            <figure class="doc-shot">
+              <img src="assets/junkybox-session.webp" width="1200" height="601" loading="lazy"
+                   alt="The Junkybox live session screen: a now-playing track with transport controls, an approved queue, and an empty pending column.">
+              <figcaption>The live session: the queue, what is approved, and what is
+                up next.</figcaption>
+            </figure>
+            <figure class="doc-shot doc-shot--phone">
+              <img src="assets/junkybox-guest.webp" width="560" height="959" loading="lazy"
+                   alt="The Junkybox guest view on a phone: the track playing now with a progress bar, a button to request a song, and the queue below.">
+              <figcaption>What a guest gets after scanning the QR code on their table
+                No app to install, and an honest estimate of how long until
+                their song plays.</figcaption>
+            </figure>
+          </section>
+
+          <section>
+            <h4>Motivation</h4>
+            <p>What started as a side project between a friend and me grew out of a
+              shared frustration with static, boring party playlists. We wanted to
+              create an interactive music experience that engages everyone in the
+              room and eliminates constant manual requests to the host or bartender,
+              all wrapped in a clean, modern interface designed for both staff and
+              guests.</p>
+          </section>
+
+          <section>
+            <h4>Purpose</h4>
+            <p>To build a single-process, real-time web application using Next.js 16
+              (App Router) with Server-Sent Events (SSE) and master complex
+              integration with the Spotify Web API for live, synchronized playback
+              control.</p>
+          </section>
+
+          <section>
+            <h4>Challenges</h4>
+            <p>Maintaining precise real-time synchronization between client requests
+              and Spotify&rsquo;s native queue without exceeding API rate limits or
+              suffering timing drift. On the product side, the main challenge was
+              designing an interface engaging enough to encourage user participation
+              while giving hosts strict, effortless control over the vibe.</p>
+          </section>
+
+          <section class="doc-note">
+            <h4>What I learned</h4>
+            <p>Through this project, I gained hands-on experience in full-stack
+              architecture and real-time systems, specifically:</p>
+            <ul class="doc-list">
+              <li>Implementing custom long-running background workers within Next.js</li>
+              <li>Managing native Spotify queue synchronization and handling API rate-limiting constraints</li>
+              <li>Structuring multi-role authentication (staff vs. customer) using Auth.js</li>
+              <li>Streaming lightweight live updates using Server-Sent Events (SSE) instead of heavier WebSockets</li>
+              <li>Prototyping and building modern UI designs using Claude Design</li>
+            </ul>
+          </section>
+
+        </div>
+      </article>
+
+
+      <article class="card" data-reveal style="--card-index:2">
+        <div class="card__shot">
           <!-- Cropped to the card frame's own ratio, so `cover` has nothing to
                throw away. See the README for the command that regenerates it. -->
           <img class="shot" src="assets/boalbasaur-platform.png" width="900" height="709"
@@ -448,143 +737,6 @@
         </div>
       </article>
 
-
-      <article class="card" data-reveal style="--card-index:1">
-        <div class="card__shot">
-          <img class="shot" src="assets/junkybox.png" width="900" height="709"
-               alt="The Junkybox staff login: a vinyl record and equalizer over a dark green glow, beside the sign-in form."
-               loading="lazy">
-          <a class="card__half card__half--left" href="https://junkybox.stary.pro/" target="_blank"
-             rel="noopener noreferrer" aria-label="Visit the Junkybox website">
-            <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
-          </a>
-          <button class="card__half card__half--right" type="button"
-                  data-doc-for="junkybox" aria-label="Read the Junkybox project doc">
-            <span class="card__action"><span class="card__glyph" aria-hidden="true">&#9776;</span> Doc</span>
-          </button>
-        </div>
-        <div class="card__body">
-          <h3 class="card__title">Junkybox</h3>
-          <p class="card__tagline">A digital jukebox for parties and venues. Guests queue the music, the host keeps control.</p>
-          <ul class="tech">
-            <li>Next.js</li><li>Spotify API</li><li>SSE</li>
-          </ul>
-          <a class="card__url" href="https://junkybox.stary.pro/" target="_blank" rel="noopener noreferrer">
-            junkybox.stary.pro<span class="card__url-arrow" aria-hidden="true">&#8599;</span>
-          </a>
-        </div>
-
-        <!-- Its own skin, and deliberately nothing like the one above it: the
-             app is near-black with a Spotify green, so its doc is too. -->
-        <div class="doc-source" id="junkybox" data-doc-theme="junkybox" hidden>
-
-          <!-- Records bleeding off the edges, the way the app puts one behind
-               its sign-in. Grooves are a repeating-radial-gradient and the
-               label a plain radial one, so the whole thing is two gradients
-               and no image. -->
-          <div class="doc-deck" aria-hidden="true">
-            <span class="doc-vinyl doc-vinyl--a"></span>
-            <span class="doc-vinyl doc-vinyl--b"></span>
-            <span class="doc-vinyl doc-vinyl--c"></span>
-          </div>
-
-          <p class="doc-lede">A digital jukebox app designed for parties and venues.</p>
-
-          <div class="doc-strip">
-            <ul class="doc-eq" aria-hidden="true">
-              <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
-              <li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li>
-            </ul>
-            <p class="doc-strip__label">One process, one live queue. Every guest
-              request lands in Spotify&rsquo;s own playback, in real time.</p>
-            <ul class="tech doc-stack">
-              <li>Next.js 16</li><li>App Router</li><li>SSE</li><li>Spotify Web API</li><li>Auth.js</li>
-            </ul>
-          </div>
-
-          <section>
-            <h4>What it is</h4>
-            <p>The host or venue connects their Spotify account, allowing guests to
-              scan a QR code, search for songs, and submit requests to a shared
-              queue. Staff or hosts manage live playback through a real-time
-              dashboard while setting custom rules for moderation.</p>
-            <ul class="doc-list">
-              <li>Approving or rejecting requests manually, or enabling automatic approval in real time</li>
-              <li>Moderation rules like blocked artists, explicit content filters, and song limits per device</li>
-              <li>Session summary reports with insights and statistics about requests and user activity</li>
-            </ul>
-          </section>
-
-          <!-- The app proper, which the public URL never shows: everything past
-               the sign-in is staff-only. width/height are on every image so the
-               panel does not reflow as they decode, and loading="lazy" means
-               they are only fetched when this doc is opened. -->
-          <section class="doc-gallery">
-            <h4>Inside the app</h4>
-            <figure class="doc-shot">
-              <img src="assets/junkybox-dashboard.webp" width="1200" height="621" loading="lazy"
-                   alt="The Junkybox staff dashboard: counters for pending requests, active tables and songs played, a now-playing panel, and a requests-per-hour chart.">
-              <figcaption>The staff dashboard: pending requests, active tables,
-                and what is playing right now.</figcaption>
-            </figure>
-            <figure class="doc-shot">
-              <img src="assets/junkybox-session.webp" width="1200" height="601" loading="lazy"
-                   alt="The Junkybox live session screen: a now-playing track with transport controls, an approved queue, and an empty pending column.">
-              <figcaption>The live session: the queue, what is approved, and what is
-                up next.</figcaption>
-            </figure>
-            <figure class="doc-shot doc-shot--phone">
-              <img src="assets/junkybox-guest.webp" width="560" height="959" loading="lazy"
-                   alt="The Junkybox guest view on a phone: the track playing now with a progress bar, a button to request a song, and the queue below.">
-              <figcaption>What a guest gets after scanning the QR code on their table
-                No app to install, and an honest estimate of how long until
-                their song plays.</figcaption>
-            </figure>
-          </section>
-
-          <section>
-            <h4>Motivation</h4>
-            <p>What started as a side project between a friend and me grew out of a
-              shared frustration with static, boring party playlists. We wanted to
-              create an interactive music experience that engages everyone in the
-              room and eliminates constant manual requests to the host or bartender,
-              all wrapped in a clean, modern interface designed for both staff and
-              guests.</p>
-          </section>
-
-          <section>
-            <h4>Purpose</h4>
-            <p>To build a single-process, real-time web application using Next.js 16
-              (App Router) with Server-Sent Events (SSE) and master complex
-              integration with the Spotify Web API for live, synchronized playback
-              control.</p>
-          </section>
-
-          <section>
-            <h4>Challenges</h4>
-            <p>Maintaining precise real-time synchronization between client requests
-              and Spotify&rsquo;s native queue without exceeding API rate limits or
-              suffering timing drift. On the product side, the main challenge was
-              designing an interface engaging enough to encourage user participation
-              while giving hosts strict, effortless control over the vibe.</p>
-          </section>
-
-          <section class="doc-note">
-            <h4>What I learned</h4>
-            <p>Through this project, I gained hands-on experience in full-stack
-              architecture and real-time systems, specifically:</p>
-            <ul class="doc-list">
-              <li>Implementing custom long-running background workers within Next.js</li>
-              <li>Managing native Spotify queue synchronization and handling API rate-limiting constraints</li>
-              <li>Structuring multi-role authentication (staff vs. customer) using Auth.js</li>
-              <li>Streaming lightweight live updates using Server-Sent Events (SSE) instead of heavier WebSockets</li>
-              <li>Prototyping and building modern UI designs using Claude Design</li>
-            </ul>
-          </section>
-
-        </div>
-      </article>
-
     </div>
   </section>
 
@@ -623,6 +775,6 @@
   </div>
 </aside>
 
-<script src="main.js?v=10"></script>
+<script src="main.js?v=11"></script>
 </body>
 </html>
