@@ -13,7 +13,7 @@ design/       the Claude Design source this was built from (reference only)
 
 ## Cache busting
 
-`index.html` links `styles.css?v=16` and `main.js?v=16`. **Bump both numbers when
+`index.html` links `styles.css?v=20` and `main.js?v=20`. **Bump both numbers when
 you change either file.** With no build step there is nothing fingerprinting
 these, and a browser holding an old `styles.css` will pair it with freshly
 changed markup — the page comes out as unstyled content in the right shape,

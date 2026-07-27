@@ -38,6 +38,12 @@
   --link:         oklch(0.42 0.1 155);
   --link-hover:   oklch(0.32 0.1 155);
 
+  /* The mascot's own body teal, averaged over a patch of it rather than picked
+     off one pixel: the art is shaded, so a single sample lands on whichever end
+     of that gradient you happened to click. One background blob wears it, which
+     is what stops it reading as a stray pink shape from another palette. */
+  --spot:         #4c9b8f;
+
   /* Retro console — the mascot's help menu. Its own near-black-on-bone pair,
      deliberately outside the page's ink ramp: the point of the panel is that
      it looks like a different device sitting on top of the page. */
@@ -120,22 +126,30 @@ a:hover { color: var(--link-hover); }
   width: 220px; height: 220px;
   transform: translateY(calc(var(--scroll-y) * -0.06px));
 }
+/* No float here. This one sits high on the left, where the page is not moving
+   yet, and a shape bobbing up and down on its own beside still text reads as
+   something loading rather than as decoration. The parallax on the wrapper is
+   motion enough, and that one at least answers to the scroll. */
 .blob--1 > i {
   border-radius: 50%;
   background: oklch(0.9 0.06 155);
   filter: blur(2px);
   opacity: 0.6;
-  animation: float-slow 7s ease-in-out infinite;
 }
 .blob--2 {
   top: 900px; right: -80px;
   width: 280px; height: 280px;
   transform: translateY(calc(var(--scroll-y) * 0.05px));
 }
+/* The one shape on the page that is not a green. It was a pink, which belonged
+   to no other colour here; now it is the mascot's teal. Held well under the
+   0.5 the pink ran at, because that pink was near-white to begin with and this
+   is a mid-tone: at the old weight it stops being a background and becomes a
+   teal disc parked beside the projects. */
 .blob--2 > i {
   border-radius: 50%;
-  background: oklch(0.93 0.05 25);
-  opacity: 0.5;
+  background: var(--spot);
+  opacity: 0.28;
   animation: float-slow 9s ease-in-out infinite reverse;
 }
 .blob--3 {
