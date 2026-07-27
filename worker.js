@@ -75,12 +75,16 @@ async function handleSend(request, env) {
     return json(503, { ok: false, error: 'unconfigured' });
   }
 
+  // The heading names which of the two screens it came from, the message sits
+  // in a quote block so it is obvious where a stranger's words start and stop,
+  // and the contact is <code> because Telegram makes that tap-to-copy, which is
+  // the one thing you actually do with it.
   const lines = [
-    'boalbasaur.com — ' + kind,
+    '<b>' + esc(kind) + '</b>  ·  boalbasaur.com',
     '',
-    body,
+    '<blockquote>' + esc(body) + '</blockquote>',
     '',
-    'From: ' + (contact || 'no contact given'),
+    contact ? '\u{1F464} <code>' + esc(contact) + '</code>' : '\u{1F464} <i>no contact given</i>',
   ];
 
   const response = await fetch(
@@ -90,9 +94,13 @@ async function handleSend(request, env) {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         chat_id: env.TELEGRAM_CHAT_ID,
-        // No parse_mode. The text is whatever a stranger typed, and in Markdown
-        // or HTML mode a stray bracket is enough for Telegram to reject the
-        // whole message as malformed.
+        // HTML rather than Markdown, and every interpolated value goes through
+        // esc() first. That ordering is the whole safety argument: in Markdown
+        // an unpaired asterisk is enough for Telegram to reject the message,
+        // and unescaped HTML lets whatever a stranger types decide how the rest
+        // of it renders. Escaped, the only tags Telegram sees are the ones on
+        // this side of the wire.
+        parse_mode: 'HTML',
         text: lines.join('\n'),
         disable_web_page_preview: true,
       }),
@@ -115,4 +123,14 @@ async function handleSend(request, env) {
 function text(value, max) {
   if (typeof value !== 'string') return '';
   return value.trim().slice(0, max);
+}
+
+// The three characters Telegram's HTML mode reads as markup. Everything that
+// came off the wire goes through here before it is put in the message, kind
+// included — that field is as much a stranger's input as the message is.
+function esc(value) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }

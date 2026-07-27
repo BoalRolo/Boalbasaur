@@ -553,7 +553,9 @@
       status(view, 'sending');
 
       post({
-        kind: trigger ? trigger.getAttribute('data-mail-subject') || '' : '',
+        // data-kind, not data-mail-subject: one is a heading in a chat, the
+        // other a subject line in an inbox, and they do not read the same way.
+        kind: trigger ? trigger.getAttribute('data-kind') || '' : '',
         body: body,
         contact: value(view, 'contact')
       }).then(function (ok) {
