@@ -5,8 +5,12 @@
   "observability": {
     "enabled": true
   },
+  // The site is still files. worker.js claims /api/send and hands everything
+  // else to ASSETS, which is what the binding is for.
+  "main": "worker.js",
   "assets": {
-    "directory": "."
+    "directory": ".",
+    "binding": "ASSETS"
   },
   "compatibility_flags": [
     "nodejs_compat"

@@ -5,14 +5,15 @@ Personal portfolio site. Static HTML/CSS/JS — no build step, no dependencies.
 ```
 index.html    markup + project content
 styles.css    all styling
-main.js       scroll reveal, parallax, mascot tilt, doc panel
+main.js       scroll reveal, parallax, mascot tilt, doc panel, the console
+worker.js     the one dynamic bit: /api/send, which relays to Telegram
 assets/       images used by the site
 design/       the Claude Design source this was built from (reference only)
 ```
 
 ## Cache busting
 
-`index.html` links `styles.css?v=11` and `main.js?v=11`. **Bump both numbers when
+`index.html` links `styles.css?v=16` and `main.js?v=16`. **Bump both numbers when
 you change either file.** With no build step there is nothing fingerprinting
 these, and a browser holding an old `styles.css` will pair it with freshly
 changed markup — the page comes out as unstyled content in the right shape,
@@ -26,14 +27,55 @@ Open `index.html` directly, or serve the folder:
 python3 -m http.server 8000
 ```
 
-Deploys as-is to GitHub Pages, Netlify, Vercel, or any static host.
+Everything renders that way. The one thing that will not work is the console's
+QUICK MESSAGE and SHARE IDEA, which post to `/api/send` — with no Worker
+answering, they fall back to the mail app on their own. For the real thing:
+
+```sh
+npx wrangler dev      # local, with .dev.vars for the secrets
+npx wrangler deploy
+```
+
+## The Telegram endpoint
+
+`worker.js` is the only part of this site that is not a file. It claims one
+path, `/api/send`, and hands every other request to the static assets.
+
+The console's QUICK MESSAGE and SHARE IDEA post there, and it passes the text to
+a Telegram bot. That indirection is the whole point: a bot token in the page is
+a bot token everyone has, so the token and the chat id live as Worker secrets
+and appear nowhere in this repo.
+
+```sh
+npx wrangler secret put TELEGRAM_BOT_TOKEN   # from @BotFather
+npx wrangler secret put TELEGRAM_CHAT_ID     # your own chat with the bot
+```
+
+For `wrangler dev`, put the same two in `.dev.vars`, which `.gitignore` already
+excludes. To find the chat id: message the bot once, then read
+`https://api.telegram.org/bot<TOKEN>/getUpdates` and take `result[0].message.chat.id`.
+
+With either secret missing the endpoint answers 503 rather than pretending, and
+the page falls back to handing the message to the visitor's mail app. Same for a
+network failure or a Telegram error, so nothing anyone types is ever dropped on
+the floor.
+
+What it checks before relaying: POST only, same-origin, a body that is not
+empty, and caps of 2000 characters on the message and 200 on the contact. That
+stops another site posting through a visitor's browser and stops the endpoint
+being a place to dump megabytes into a phone. It does not stop someone with
+`curl`, and nothing short of a challenge like Turnstile would — worth adding if
+it ever attracts any.
+
+Deploys to Cloudflare Workers. It would still deploy as-is to any static host,
+with the two Telegram views falling back to the mail app.
 
 ## Editing content
 
 Each project is one `<article class="card">` in `index.html`. A card holds:
 
 - the visible bits — screenshot, title, tagline, tech pills
-- `href` on `.card__half--left` — where "Check website" goes
+- `href` on `.card__half--left` — where "Visit" goes
 - `.card__url` — the same address again, written out at the foot of the card
   (touch devices have no hover, so the screenshot halves reveal nothing there)
 - a `.doc-source` block — the content of the slide-out doc panel
@@ -44,7 +86,29 @@ on its Doc button.
 
 The grid sizes itself with `repeat(auto-fill, minmax(300px, 1fr))`, so a card is
 the same width whether there is one project or six — new ones fill the row
-instead of resizing the ones already there.
+instead of resizing the ones already there. Cards run newest first.
+
+### The card as a console screen
+
+A card is dressed as the mascot's console, using the same pieces rather than a
+second retro look sitting beside the first: the `6px double` frame, the
+`--retro-bg` / `--retro-ink` pair, `Press Start 2P` for the title and the screen
+label, `Courier New` for the pills and the address, and the console's `▸` on the
+address as it is pointed at. Corners are square, and the drop shadow is a hard
+offset block with no blur.
+
+Two things to know before changing it:
+
+- **The title has a width budget.** `Press Start 2P` is one em per character, so
+  a title is about `characters × font-size` wide. At 12px, 19 characters (about
+  228px) is what fits the narrowest a card gets. Longer names wrap, which is
+  survivable, or step the size down.
+- **The press moves on `translate`, not `transform`.** `[data-reveal]` owns
+  `transform` on these cards and transitions it over 0.7s, so a press written
+  there would both fight the reveal and inherit its timing. `translate` and
+  `box-shadow` are outside that transition list, so they snap with no duration,
+  which is also what you want: easing is a light-and-physics idea and a sprite is
+  simply in one frame or the next.
 
 ### Per-project doc themes
 
@@ -219,6 +283,23 @@ scrolls and content that overflows it.** A quick check in the console —
 - **Doc panel.** Content is read from the card's hidden `.doc-source`, and its
   design from that block's `data-doc-theme` (see above). Traps focus, closes on
   Escape / overlay click, restores focus to the button that opened it.
+- **The mascot's console.** Every screen is a `.retro__view` in `index.html` and
+  the script shows one at a time, typing its text out. All of the words live in
+  the markup: the script reads each `[data-type]` element's own text once on
+  load and replays it, so it owns none of them.
+
+  A screen's boxes are addressed by `data-field` (`subject`, `header`, `body`,
+  `contact`), never by the `.retro__input` class they share — a `querySelector`
+  on the class returns whichever comes first, which is how a contact address
+  ends up sent as the message body.
+
+  `data-send` on a SEND button picks where it goes. `"mail"` composes a `mailto:`
+  and hands it to the visitor's own client, with the typed subject winning over
+  the button's `data-mail-subject` fallback, the header opening the body and the
+  contact at its foot. `"post"` sends it to `/api/send` (see above), showing one
+  of the `[data-status]` lines in that view's `[data-sent]` block as it goes:
+  `sending`, then `ok`, or `mail` when the endpoint could not take it and the
+  message went to the mail app instead.
 
 Everything animated is disabled under `prefers-reduced-motion: reduce`.
 
