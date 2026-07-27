@@ -13,7 +13,7 @@ design/       the Claude Design source this was built from (reference only)
 
 ## Cache busting
 
-`index.html` links `styles.css?v=20` and `main.js?v=20`. **Bump both numbers when
+`index.html` links `styles.css?v=21` and `main.js?v=21`. **Bump both numbers when
 you change either file.** With no build step there is nothing fingerprinting
 these, and a browser holding an old `styles.css` will pair it with freshly
 changed markup — the page comes out as unstyled content in the right shape,
@@ -59,6 +59,21 @@ With either secret missing the endpoint answers 503 rather than pretending, and
 the page falls back to handing the message to the visitor's mail app. Same for a
 network failure or a Telegram error, so nothing anyone types is ever dropped on
 the floor.
+
+What arrives on the phone is one message per send: the screen it came from in
+bold, the text in a quote block so it is obvious where a stranger's words start
+and stop, and the contact as `<code>`, which Telegram makes tap-to-copy. The
+heading comes from `data-kind` on the SEND button rather than from the Worker,
+so adding a kind is a markup change and the wording stays in `index.html` with
+everything else the panel says. It is separate from `data-mail-subject` because
+a subject line reads as boilerplate in a chat.
+
+That message is `parse_mode: HTML`, and **every interpolated value goes through
+`esc()` first, the heading included** — it comes off the wire like everything
+else. Escaped, the only tags Telegram sees are the Worker's own. HTML rather
+than Markdown for the same reason: in Markdown a single unpaired asterisk in
+someone's message is enough for Telegram to reject the whole send, which the
+page would then report as the line being down.
 
 What it checks before relaying: POST only, same-origin, a body that is not
 empty, and caps of 2000 characters on the message and 200 on the contact. That

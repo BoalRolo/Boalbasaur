@@ -29,7 +29,7 @@
      freshly-changed markup: the page renders as unstyled content in the right
      shape, which looks like the CSS is broken rather than stale. Bump the
      number whenever styles.css or main.js changes. -->
-<link rel="stylesheet" href="styles.css?v=20">
+<link rel="stylesheet" href="styles.css?v=21">
 </head>
 <body>
 
@@ -321,7 +321,15 @@
               <button class="retro__row" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
                 <span data-type>&lt; BACK</span>
               </button>
+              <!-- data-kind is the heading this arrives under on Telegram, emoji
+                   and all. It is separate from data-mail-subject because that
+                   one is an email subject line and reads as boilerplate in a
+                   chat, and it lives here rather than in the Worker for the
+                   same reason as everything else the panel says: the words are
+                   the page's, and adding a new kind should not mean editing a
+                   server. -->
               <button class="retro__row" type="button" data-send="post"
+                      data-kind="&#128172; Quick message"
                       data-mail-subject="Hello from boalbasaur.com"
                       data-note="Sending it over." aria-label="Send message">
                 <span data-type>SEND &gt;</span>
@@ -352,6 +360,7 @@
                 <span data-type>&lt; BACK</span>
               </button>
               <button class="retro__row" type="button" data-send="post"
+                      data-kind="&#128161; Idea"
                       data-mail-subject="An idea for boalbasaur.com"
                       data-note="Sending it over." aria-label="Send idea">
                 <span data-type>SEND &gt;</span>
@@ -853,6 +862,6 @@
   </div>
 </aside>
 
-<script src="main.js?v=20"></script>
+<script src="main.js?v=21"></script>
 </body>
 </html>
