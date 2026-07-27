@@ -456,31 +456,135 @@
       if (note) note.resume();   // back to idle chatter
     }
 
+    // A view's boxes are addressed by data-field. Both are .retro__input, so
+    // asking for the class would hand back whichever sits first in the markup.
+    function value(view, name) {
+      var field = view.querySelector('[data-field="' + name + '"]');
+      return field ? field.value.trim() : '';
+    }
+
+    function clear(view) {
+      Array.prototype.forEach.call(view.querySelectorAll('[data-field]'), function (field) {
+        field.value = '';
+      });
+    }
+
+    // Shows one of a view's outcome lines and types it. The words are all in
+    // index.html; this only picks which of them is on screen.
+    function status(view, name) {
+      var sent = view.querySelector('[data-sent]');
+      if (!sent) return;
+
+      var lines = sent.querySelectorAll('[data-status]');
+      if (!lines.length) {
+        type(sent);
+        return;
+      }
+
+      Array.prototype.forEach.call(lines, function (line) {
+        line.hidden = line.getAttribute('data-status') !== name;
+      });
+      // pending() skips anything inside a [hidden], so the crawl only ever sees
+      // the line that was just chosen.
+      type(sent);
+    }
+
+    // The mail app route: everything the visitor typed, handed to their own
+    // client with nothing sent on their behalf. The alternative, for a site
+    // with no server behind it, was a button claiming delivery while dropping
+    // the message on the floor.
+    function toMail(view, trigger) {
+      var to = panel.getAttribute('data-mail');
+      if (!to) return;
+
+      var body = value(view, 'body');
+      var header = value(view, 'header');
+      var contact = value(view, 'contact');
+      // The typed subject wins; the trigger's is the fallback, so a mail app
+      // never opens with a blank subject line.
+      var subject = value(view, 'subject') ||
+        (trigger ? trigger.getAttribute('data-mail-subject') || '' : '');
+
+      // A mailto carries a subject and a body and nothing else, so the header
+      // opens the body. The contact goes at its foot instead: Reply-To exists
+      // in the spec and mail clients drop it, and putting it up top would push
+      // what they came to say below the fold.
+      if (header) body = header + '\n\n' + body;
+      if (contact) body += '\n\n' + 'Reply to: ' + contact;
+
+      window.location.href = 'mailto:' + to +
+        '?subject=' + encodeURIComponent(subject) +
+        '&body=' + encodeURIComponent(body);
+    }
+
+    function finish(view) {
+      sentTimer = window.setTimeout(function () {
+        clear(view);
+        show('menu');
+      }, SENT_MS);
+    }
+
     function send(view, trigger) {
       var form = view.querySelector('[data-form]');
       var sent = view.querySelector('[data-sent]');
       if (!form || !sent) return;
 
-      // Hands the text to the visitor's own mail client. There is no server
-      // behind this panel, so the alternative was a button that says the
-      // message was delivered while dropping it on the floor.
-      var to = panel.getAttribute('data-mail');
-      var field = view.querySelector('.retro__input');
-      if (to) {
-        window.location.href = 'mailto:' + to +
-          '?subject=' + encodeURIComponent(trigger ? trigger.getAttribute('data-mail-subject') || '' : '') +
-          '&body=' + encodeURIComponent(field ? field.value : '');
+      var mode = trigger ? trigger.getAttribute('data-send') : 'mail';
+      var body = value(view, 'body');
+
+      // Nothing to send is not a failure, it is a message that is not written
+      // yet. Put the cursor back in the box rather than opening a blank email.
+      if (!body) {
+        var field = view.querySelector('[data-field="body"]');
+        if (field) field.focus();
+        return;
       }
 
       form.hidden = true;
       sent.hidden = false;
-      type(sent);
 
-      sentTimer = window.setTimeout(function () {
-        var field = view.querySelector('.retro__input');
-        if (field) field.value = '';
-        show('menu');
-      }, SENT_MS);
+      if (mode !== 'post') {
+        toMail(view, trigger);
+        status(view, 'mail');
+        finish(view);
+        return;
+      }
+
+      // POST route: the site's own endpoint, which passes it to Telegram. The
+      // credentials for that live as Worker secrets and never reach this file.
+      status(view, 'sending');
+
+      post({
+        kind: trigger ? trigger.getAttribute('data-mail-subject') || '' : '',
+        body: body,
+        contact: value(view, 'contact')
+      }).then(function (ok) {
+        if (ok) {
+          status(view, 'ok');
+        } else {
+          // The endpoint is down, or was never configured. Rather than lose
+          // what they wrote, hand it to the mail app and say so.
+          toMail(view, trigger);
+          status(view, 'mail');
+        }
+        finish(view);
+      });
+    }
+
+    // Resolves true or false and never rejects, so one failing send cannot
+    // leave the panel stuck on SENDING with no way forward.
+    function post(payload) {
+      if (typeof window.fetch !== 'function') return Promise.resolve(false);
+
+      return window.fetch('/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        return res.ok;
+      }).catch(function () {
+        return false;
+      });
     }
 
     rows = Array.prototype.slice.call(views.menu.querySelectorAll('.retro__row'));

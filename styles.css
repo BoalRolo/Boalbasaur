@@ -264,9 +264,20 @@ a:hover { color: var(--link-hover); }
 }
 
 /* --- Hero --------------------------------------------------------------- */
+/* 2, not the 1 every other section carries, and it has to stay ahead of them.
+   The console is absolutely positioned inside this section and is now tall
+   enough to hang past its bottom edge, over .projects. Sitting at the same
+   z-index as .projects, the hero loses the tie to whatever comes later in the
+   document, and .projects paints — and hit-tests — over the bottom of the
+   console. It has no background, so nothing looks wrong: the panel is fully
+   visible and its SEND button quietly stops taking clicks.
+
+   Lifting the hero is safe because these are siblings in flow: their boxes
+   never overlap, so the only thing this raises into the section below is the
+   console, which is the one thing that has to be reachable there. */
 .hero {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   max-width: var(--shell);
   margin: 0 auto;
   padding: 64px var(--gutter) 120px;
@@ -599,27 +610,78 @@ a:hover { color: var(--link-hover); }
   gap: 24px;
 }
 
+/* A card is a console screen. The frame, the bone panel and the near-black ink
+   are the mascot's, not a second retro look invented alongside it: same
+   `6px double` border, same --retro-* pair. `double` is already two lines with
+   a gap between them, and the gap shows the element's own background, so one
+   border draws the whole frame.
+
+   Square corners, and the shadow is a hard offset block with no blur. Both are
+   the point: a soft shadow is a light source, and there is no light source in a
+   sprite. */
 .card {
   display: flex;
   flex-direction: column;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--surface);
+  border-radius: 0;
+  border: 6px double var(--retro-ink);
+  background: var(--retro-bg);
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(20, 20, 15, 0.04);
+  box-shadow: 7px 7px 0 var(--retro-ink);
   --reveal-delay: calc(var(--card-index) * 0.06s);
+}
+
+/* Pressed, like a button on the console. Two things make this work:
+
+   It moves on `translate`, not `transform`. [data-reveal] transitions
+   `transform` over 0.7s, and a card is revealed, so pressing on `transform`
+   would inherit that timing and the press would take most of a second. It also
+   only sets `transform`, which the reveal owns, so writing to it here would
+   fight the reveal outright.
+
+   Neither `translate` nor `box-shadow` is in that transition list, so both snap
+   with no duration. That is deliberate: easing is a light-and-physics idea, and
+   a sprite either is in one frame or the next. The card moves exactly as far as
+   the shadow shrinks, so the block stays pinned to the page while the card
+   drops onto it. */
+.card:hover,
+.card:focus-within {
+  translate: 4px 4px;
+  box-shadow: 3px 3px 0 var(--retro-ink);
 }
 
 .card__shot {
   position: relative;
   width: 100%;
   height: 260px;
+  /* The screen sits in the frame, so it gets its own line under it rather than
+     bleeding into the panel below. */
+  border-bottom: 3px solid var(--retro-ink);
   /* Holds two focusable halves; focusing one scrolls its ancestors, so keep
      this out of scroll-container territory too. */
   overflow: hidden;
   overflow: clip;
   flex: none;
 }
+
+/* Scanlines, over everything in the screen including the hover label. They come
+   up only on hover: held over three screenshots permanently they read as a
+   texture on the page, and on the one you are pointing at they read as a
+   CRT. The z-index puts them above .card__half, which is positioned but has no
+   index of its own. */
+.card__shot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    rgba(20, 20, 15, 0) 0 2px,
+    rgba(20, 20, 15, 0.17) 2px 3px);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+.card:hover .card__shot::after,
+.card:focus-within .card__shot::after { opacity: 1; }
 
 .shot {
   width: 100%;
@@ -670,25 +732,35 @@ a:hover { color: var(--link-hover); }
 }
 .card__half:focus-visible { outline-offset: -3px; }
 
+/* The label on the screen, in the console's own pixel type. The hard offset
+   behind it is the same block the card casts, at text size: no blur, so it
+   reads as a second sprite drawn one step down and right rather than as a
+   glow. It also keeps the label legible over whatever the screenshot happens
+   to be, which a thin white type on a dark gradient does not always manage.
+   Steps rather than easing, to match the press. */
 .card__action {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 20px;
+  font-family: 'Press Start 2P', var(--display), monospace;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.4;
   color: #fff;
+  text-shadow: 3px 3px 0 rgba(20, 20, 15, 0.85);
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity 0.22s ease, transform 0.22s ease;
+  transition: opacity 0.16s steps(3), transform 0.16s steps(3);
 }
 .card__half:hover .card__action,
 .card__half:focus-visible .card__action {
   opacity: 1;
   transform: translateY(0);
 }
-.card__arrow { font-size: 22px; }
-.card__glyph { font-size: 18px; }
+/* Both glyphs come from the page font, not Press Start 2P, which has neither.
+   Sized to sit level with the pixel caps beside them. */
+.card__arrow { font-family: var(--body); font-size: 18px; }
+.card__glyph { font-family: var(--body); font-size: 16px; }
 
 .card__body {
   display: flex;
@@ -697,12 +769,21 @@ a:hover { color: var(--link-hover); }
   flex: 1;
   padding: 20px 22px 22px;
 }
+/* Press Start 2P is drawn on an 8px grid and every glyph is one em wide, so a
+   title's width is its character count, near enough. 12px holds the longest one
+   here (19 characters, so ~228px) inside the narrowest a card ever gets, and
+   line-height has to be generous or the caps sit on top of one another. */
 .card__title {
-  font-family: var(--display);
-  font-weight: 600;
-  font-size: 19px;
-  margin: 0;
+  font-family: 'Press Start 2P', var(--display), monospace;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.55;
+  letter-spacing: 0.01em;
+  color: var(--retro-ink);
+  margin: 2px 0 0;
 }
+/* The tagline stays in the page's own text face. Pixel type is a costume, and
+   a paragraph wearing it is a paragraph nobody reads. */
 .card__tagline {
   font-size: 14px;
   color: var(--ink-softer);
@@ -713,6 +794,10 @@ a:hover { color: var(--link-hover); }
    down there so the line sits level across a row of cards whose taglines run to
    different lengths; `align-self` keeps the link the width of its text rather
    than stretching it across the card, since only the text is the target. */
+/* Set as a row of the console's menu: monospace, and the same caret the mascot
+   marks its selected line with. `visibility` rather than `display` for the same
+   reason it uses there, that the caret holds its column whether or not it is
+   showing, so the address does not jump sideways under the pointer. */
 .card__url {
   display: inline-flex;
   align-items: center;
@@ -720,17 +805,41 @@ a:hover { color: var(--link-hover); }
   margin-top: auto;
   align-self: flex-start;
   padding-top: 2px;
-  font-size: 13px;
-  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  font-size: 13.5px;
+  font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--link);
 }
+.card__url::before {
+  content: '\25B8';
+  visibility: hidden;
+  font-size: 12px;
+}
 .card__url:hover { color: var(--link-hover); }
+.card__url:hover::before,
+.card__url:focus-visible::before { visibility: visible; }
 .card__url-arrow {
   font-size: 12px;
   transition: transform 0.18s ease;
 }
 .card__url:hover .card__url-arrow { transform: translate(2px, -2px); }
+
+/* Cartridge labels: squared off, boxed in the console's ink, and scoped to the
+   card. The docs use .tech too, and both dark themes restyle it for their own
+   app — none of them want this. */
+.card__body .tech li {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 4px 8px;
+  border-radius: 0;
+  border: 2px solid var(--retro-ink);
+  background: rgba(0, 0, 0, 0);
+  color: var(--retro-ink);
+}
 
 .tech {
   display: flex;
@@ -1797,10 +1906,15 @@ a:hover { color: var(--link-hover); }
     opacity: 1;
     transform: none;
   }
-  .card__half--left .card__action  { font-size: 17px; }
-  .card__half--right .card__action { font-size: 17px; }
+  /* Both labels are on screen permanently here, and pixel type at the old 17px
+     runs into the middle of the shot. 11px is as small as Press Start 2P goes
+     before the counters close up. */
+  .card__half--left .card__action  { font-size: 11px; }
+  .card__half--right .card__action { font-size: 11px; }
   /* Nothing to slide toward without a pointer. */
   .card__url-arrow { transition: none; }
+  /* No pointer to press it with, so the caret would never come up. */
+  .card__url::before { display: none; }
   .projects__hint { display: none; }
 }
 

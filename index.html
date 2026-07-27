@@ -29,7 +29,7 @@
      freshly-changed markup: the page renders as unstyled content in the right
      shape, which looks like the CSS is broken rather than stale. Bump the
      number whenever styles.css or main.js changes. -->
-<link rel="stylesheet" href="styles.css?v=11">
+<link rel="stylesheet" href="styles.css?v=16">
 </head>
 <body>
 
@@ -203,6 +203,9 @@
            data-mail="boalbasaur@gmail.com"
            aria-label="boalbasaur help menu" hidden>
 
+        <!-- Menu order runs from the least commitment to the most: read the
+             address, write a whole email, write something short, write an idea,
+             give me money. -->
         <div class="retro__view" data-view="menu">
           <p class="retro__heading" data-type>DO YOU NEED HELP?</p>
           <ul class="retro__menu">
@@ -212,8 +215,8 @@
               </button>
             </li>
             <li>
-              <button class="retro__row" type="button" data-goto="donate" data-note="I mostly run on sunlight." aria-label="Donate">
-                <span class="retro__caret" aria-hidden="true">&#9654;</span><span data-type>DONATE</span>
+              <button class="retro__row" type="button" data-goto="email" data-note="Draft it here, send it there." aria-label="Send email">
+                <span class="retro__caret" aria-hidden="true">&#9654;</span><span data-type>SEND EMAIL</span>
               </button>
             </li>
             <li>
@@ -226,6 +229,11 @@
                 <span class="retro__caret" aria-hidden="true">&#9654;</span><span data-type>SHARE IDEA</span>
               </button>
             </li>
+            <li>
+              <button class="retro__row" type="button" data-goto="donate" data-note="I mostly run on sunlight." aria-label="Donate">
+                <span class="retro__caret" aria-hidden="true">&#9654;</span><span data-type>DONATE</span>
+              </button>
+            </li>
           </ul>
         </div>
 
@@ -233,7 +241,7 @@
           <p class="retro__heading" data-type>CONTACT</p>
           <div class="retro__lines">
             <p data-type>EMAIL: boalbasaur@gmail.com</p>
-            <p data-type>GITHUB: github.com/BoalRolo</p>
+            <p data-type>ADDRESS: Patch #2B, Pallet Town Forest (Just follow the sunny spot!)</p>
           </div>
           <button class="retro__row retro__row--lead" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
             <span data-type>&lt; BACK</span>
@@ -250,43 +258,100 @@
           </button>
         </div>
 
-        <div class="retro__view" data-view="message" hidden>
-          <p class="retro__heading" data-type>QUICK MESSAGE</p>
+        <!-- The whole email, written here rather than in the mail app. SEND
+             still ends in the visitor's own client, with every box already
+             filled in, so the last word on what leaves their machine is
+             theirs. Subject goes to the mailto's subject; the header is the
+             line the message opens on, and rides at the top of the body,
+             because a mailto can carry a subject and a body and nothing else.
+
+             data-field, not the class, is what the script reads: every box here
+             is a .retro__input, and a querySelector on the class would take
+             whichever comes first. -->
+        <div class="retro__view" data-view="email" hidden>
+          <p class="retro__heading" data-type>SEND EMAIL</p>
           <div data-form>
-            <textarea class="retro__input" rows="3" placeholder="Say hi..." aria-label="Your message"></textarea>
+            <input class="retro__input" data-field="subject" type="text"
+                   placeholder="Subject" aria-label="Subject">
+            <input class="retro__input" data-field="header" type="text"
+                   placeholder="Header" aria-label="Header">
+            <textarea class="retro__input" data-field="body" rows="3"
+                      placeholder="Your message" aria-label="Your message"></textarea>
             <div class="retro__actions">
               <button class="retro__row" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
                 <span data-type>&lt; BACK</span>
               </button>
-              <button class="retro__row" type="button" data-send
+              <!-- The fallback subject, for a mail app that would otherwise open
+                   with a blank one. The field wins whenever it has anything. -->
+              <button class="retro__row" type="button" data-send="mail"
                       data-mail-subject="Hello from boalbasaur.com"
-                      data-note="Off to your mail app." aria-label="Send message">
+                      data-note="Off to your mail app." aria-label="Send email">
                 <span data-type>SEND &gt;</span>
               </button>
             </div>
           </div>
           <div data-sent hidden>
-            <p class="retro__body" data-type>HANDED IT TO YOUR MAIL APP.</p>
+            <p class="retro__body" data-type data-status="mail">HANDED IT TO YOUR MAIL APP.</p>
+          </div>
+        </div>
+
+        <!-- These two do not go through a mail app at all: SEND posts them to
+             the site's own Worker, which passes them to Telegram. The contact
+             box is optional and asked for first, the way you address a letter
+             before writing it, and here it is the only way back — nothing else
+             in the request says who sent it.
+
+             type="text", not "email", because it asks for a contact and not
+             only an address: a handle or a number belongs here too, and typing
+             one into an email field is how you get told it is invalid. -->
+        <div class="retro__view" data-view="message" hidden>
+          <p class="retro__heading" data-type>QUICK MESSAGE</p>
+          <div data-form>
+            <input class="retro__input" data-field="contact" type="text"
+                   placeholder="Your email or contact" aria-label="Your email or contact">
+            <textarea class="retro__input" data-field="body" rows="3" placeholder="Say hi..." aria-label="Your message"></textarea>
+            <div class="retro__actions">
+              <button class="retro__row" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
+                <span data-type>&lt; BACK</span>
+              </button>
+              <button class="retro__row" type="button" data-send="post"
+                      data-mail-subject="Hello from boalbasaur.com"
+                      data-note="Sending it over." aria-label="Send message">
+                <span data-type>SEND &gt;</span>
+              </button>
+            </div>
+          </div>
+          <!-- One line per outcome, all three living here rather than in the
+               script, which owns none of the words. The script un-hides one and
+               types whatever is not hidden. -->
+          <div data-sent hidden>
+            <p class="retro__body" data-type data-status="sending">SENDING...</p>
+            <p class="retro__body" data-type data-status="ok" hidden>GOT IT. IT IS ON MY PHONE.</p>
+            <p class="retro__body" data-type data-status="mail" hidden>MY LINE IS DOWN. HANDED IT TO YOUR MAIL APP.</p>
           </div>
         </div>
 
         <div class="retro__view" data-view="idea" hidden>
           <p class="retro__heading" data-type>SHARE AN IDEA</p>
           <div data-form>
-            <textarea class="retro__input" rows="3" placeholder="What should I build next?" aria-label="Your idea"></textarea>
+            <input class="retro__input" data-field="contact" type="text"
+                   placeholder="Your email or contact" aria-label="Your email or contact">
+            <textarea class="retro__input" data-field="body" rows="3" placeholder="What should I build next?" aria-label="Your idea"></textarea>
             <div class="retro__actions">
               <button class="retro__row" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
                 <span data-type>&lt; BACK</span>
               </button>
-              <button class="retro__row" type="button" data-send
+              <button class="retro__row" type="button" data-send="post"
                       data-mail-subject="An idea for boalbasaur.com"
-                      data-note="Off to your mail app." aria-label="Send idea">
+                      data-note="Sending it over." aria-label="Send idea">
                 <span data-type>SEND &gt;</span>
               </button>
             </div>
           </div>
           <div data-sent hidden>
-            <p class="retro__body" data-type>HANDED IT TO YOUR MAIL APP.</p>
+            <p class="retro__body" data-type data-status="sending">SENDING...</p>
+            <p class="retro__body" data-type data-status="ok" hidden>PLANTED. IT IS ON MY PHONE.</p>
+            <p class="retro__body" data-type data-status="mail" hidden>MY LINE IS DOWN. HANDED IT TO YOUR MAIL APP.</p>
           </div>
         </div>
 
@@ -309,7 +374,7 @@
                loading="lazy">
           <a class="card__half card__half--left" href="https://betweenus-app.pages.dev/" target="_blank"
              rel="noopener noreferrer" aria-label="Visit the BetweenUs website">
-            <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
+            <span class="card__action">Visit <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
           </a>
           <button class="card__half card__half--right" type="button"
                   data-doc-for="betweenus" aria-label="Read the BetweenUs project doc">
@@ -460,7 +525,7 @@
                loading="lazy">
           <a class="card__half card__half--left" href="https://junkybox.stary.pro/" target="_blank"
              rel="noopener noreferrer" aria-label="Visit the Junkybox website">
-            <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
+            <span class="card__action">Visit <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
           </a>
           <button class="card__half card__half--right" type="button"
                   data-doc-for="junkybox" aria-label="Read the Junkybox project doc">
@@ -600,7 +665,7 @@
                loading="lazy">
           <a class="card__half card__half--left" href="https://boalbasaur.com/" data-already-here
              rel="noopener" aria-label="Visit the Boalbasaur Platform website">
-            <span class="card__action">Check website <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
+            <span class="card__action">Visit <span class="card__arrow" aria-hidden="true">&rarr;</span></span>
           </a>
           <button class="card__half card__half--right" type="button"
                   data-doc-for="boalbasaur-platform" aria-label="Read the Boalbasaur Platform project doc">
@@ -775,6 +840,6 @@
   </div>
 </aside>
 
-<script src="main.js?v=11"></script>
+<script src="main.js?v=16"></script>
 </body>
 </html>
