@@ -29,7 +29,7 @@
      freshly-changed markup: the page renders as unstyled content in the right
      shape, which looks like the CSS is broken rather than stale. Bump the
      number whenever styles.css or main.js changes. -->
-<link rel="stylesheet" href="styles.css?v=16">
+<link rel="stylesheet" href="styles.css?v=20">
 </head>
 <body>
 
@@ -290,8 +290,15 @@
               </button>
             </div>
           </div>
+          <!-- BACK is the only way out of here. The confirmation used to clear
+               itself after a second and a half, which read as the panel
+               changing its mind: you look up from the mail app that just
+               opened and the screen that told you so is gone. -->
           <div data-sent hidden>
             <p class="retro__body" data-type data-status="mail">HANDED IT TO YOUR MAIL APP.</p>
+            <button class="retro__row retro__row--lead" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
+              <span data-type>&lt; BACK</span>
+            </button>
           </div>
         </div>
 
@@ -328,6 +335,9 @@
             <p class="retro__body" data-type data-status="sending">SENDING...</p>
             <p class="retro__body" data-type data-status="ok" hidden>GOT IT. IT IS ON MY PHONE.</p>
             <p class="retro__body" data-type data-status="mail" hidden>MY LINE IS DOWN. HANDED IT TO YOUR MAIL APP.</p>
+            <button class="retro__row retro__row--lead" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
+              <span data-type>&lt; BACK</span>
+            </button>
           </div>
         </div>
 
@@ -352,6 +362,9 @@
             <p class="retro__body" data-type data-status="sending">SENDING...</p>
             <p class="retro__body" data-type data-status="ok" hidden>PLANTED. IT IS ON MY PHONE.</p>
             <p class="retro__body" data-type data-status="mail" hidden>MY LINE IS DOWN. HANDED IT TO YOUR MAIL APP.</p>
+            <button class="retro__row retro__row--lead" type="button" data-goto="menu" data-note="Take your time." aria-label="Back to the menu">
+              <span data-type>&lt; BACK</span>
+            </button>
           </div>
         </div>
 
@@ -840,6 +853,6 @@
   </div>
 </aside>
 
-<script src="main.js?v=16"></script>
+<script src="main.js?v=20"></script>
 </body>
 </html>

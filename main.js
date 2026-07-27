@@ -284,7 +284,6 @@
 
     var SHAKE_MS = 420;   // the pixel-shake keyframes, plus a frame to settle
     var CHAR_MS = 18;
-    var SENT_MS = 1500;
 
     var tilt = document.querySelector('.mascot__tilt');
     var rows = [];
@@ -292,7 +291,6 @@
     var current = 'menu';
     var index = 0;
     var openTimer = 0;
-    var sentTimer = 0;
     var typeTimer = 0;
     var fillIn = null;
 
@@ -408,7 +406,6 @@
       var view = views[name];
       if (!view) return;
 
-      window.clearTimeout(sentTimer);
       current = name;
 
       Object.keys(views).forEach(function (key) {
@@ -448,7 +445,6 @@
 
     function close() {
       window.clearTimeout(openTimer);
-      window.clearTimeout(sentTimer);
       settle();
       if (tilt) tilt.classList.remove('is-shaking');
       panel.hidden = true;
@@ -517,11 +513,13 @@
         '&body=' + encodeURIComponent(body);
     }
 
+    // The confirmation stays up until BACK is pressed. It used to clear itself
+    // after a second and a half, which meant the one screen telling you what
+    // happened was gone by the time you looked back from the mail app it had
+    // just opened. Only the boxes are emptied, and only once whatever was going
+    // to read them has read them, so re-entering the view starts clean.
     function finish(view) {
-      sentTimer = window.setTimeout(function () {
-        clear(view);
-        show('menu');
-      }, SENT_MS);
+      clear(view);
     }
 
     function send(view, trigger) {
@@ -637,6 +635,26 @@
           speak(views[current].querySelector('[data-goto="menu"]'));
           show('menu');
         }
+        return;
+      }
+
+      // Enter sends, the way it submits any other form. In the message box it
+      // makes a new line instead, and takes a modifier to send: that box is the
+      // one people write more than a line in, and a send cannot be taken back
+      // once it is on my phone. Cmd or Ctrl + Enter sends from there.
+      if (inField && e.key === 'Enter') {
+        var multiline = e.target.tagName === 'TEXTAREA';
+        if (multiline && !e.metaKey && !e.ctrlKey) return;
+
+        // Not named `button`: var is function-scoped, so it would hoist over
+        // the mascot's button that the Escape branch above focuses.
+        var sender = views[current].querySelector('[data-send]');
+        if (!sender) return;
+
+        e.preventDefault();
+        settle();
+        speak(sender);
+        send(views[current], sender);
         return;
       }
 
